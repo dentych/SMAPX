@@ -1,4 +1,8 @@
 <resources>
-    <string name="app_name">Weather: Aarhus</string>
+    <string name="app_name">Assignment2</string>
     <string name="api_key"></string>
+    <string name="app_label">Weather: Aarhus</string>
+    <string name="currentWeather_label">Current:</string>
+    <string name="no_data">No data</string>
+    <string name="listView_label">Past 24 Hours:</string>
 </resources>
