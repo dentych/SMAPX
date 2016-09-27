@@ -1,37 +1,33 @@
 package group.smapx.assignment2.service;
 
-import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Binder;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.stream.JsonReader;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import group.smapx.assignment2.NotImplementedException;
 import group.smapx.assignment2.R;
+import group.smapx.assignment2.models.WeatherModel;
 
 public class WeatherService extends Service {
     private static final String LOG_TAG = "WeatherService";
@@ -53,8 +49,6 @@ public class WeatherService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.d(LOG_TAG, "onCreate!");
-
-
     }
 
     @Override
@@ -71,7 +65,7 @@ public class WeatherService extends Service {
             @Override
             public void run() {
                 if (isConnectedToInternet()) {
-                    URL url = tryGetUrl("http://api.openweathermap.org/data/2.5/weather?q=Aarhus&APPID=" +
+                    URL url = tryGetUrl("http://api.openweathermap.org/data/2.5/weather?q=Aarhus&units=metric&APPID=" +
                             getString(R.string.api_key));
                     if (url == null) {
                         return;
@@ -94,8 +88,7 @@ public class WeatherService extends Service {
                             result.append(line);
                         }
                         Log.d(LOG_TAG, "Result: " + result);
-                        // TODO: Convert to Java Object and put in DB
-                        // Use JsonObject maybe?
+                        WeatherModel weatherInfo = parseResult(result.toString());
                     } catch (IOException e) {
                         Log.e(LOG_TAG, "Error when trying to fetch weather data", e);
                     } finally {
@@ -123,6 +116,28 @@ public class WeatherService extends Service {
         }, 1000, 1000000);
 
         return START_STICKY;
+    }
+
+    private WeatherModel parseResult(String result) {
+        Log.d(LOG_TAG, "Parsing weather info from result: " + result);
+
+        long timestamp = Calendar.getInstance().getTime().getTime();
+        Gson gson = new Gson();
+        WeatherJsonObject weatherObject = gson.fromJson(result, WeatherJsonObject.class);
+
+        WeatherModel weatherInfo = new WeatherModel(
+                timestamp,
+                weatherObject.getTemperature(),
+                weatherObject.getHumidity(),
+                weatherObject.getPressure(),
+                weatherObject.getTempMin(),
+                weatherObject.getTempMax(),
+                weatherObject.getWindSpeed(),
+                weatherObject.getWindDirection(),
+                weatherObject.getClouds()
+        );
+
+        return weatherInfo;
     }
 
     @Override
@@ -164,5 +179,53 @@ public class WeatherService extends Service {
      */
     public List<Object> getPastWeather() {
         throw new NotImplementedException();
+    }
+
+    private class WeatherJsonObject {
+        // long timestamp, double temperature, double humidity, double pressure, double temp_min, double temp_max, double windspeed, double winddirection, String clouds
+        private JsonObject coord;
+        private JsonArray weather;
+        private String base;
+        private JsonObject main;
+        private JsonObject wind;
+        private JsonObject clouds;
+        private JsonObject rain;
+        private int dt;
+        private JsonObject sys;
+        private int id;
+        private String name;
+        private int cod;
+
+        public double getTemperature() {
+            return main.get("temp").getAsDouble();
+        }
+
+        public double getHumidity() {
+            return main.get("humidity").getAsDouble();
+        }
+
+        public double getPressure() {
+            return main.get("pressure").getAsDouble();
+        }
+
+        public double getTempMin() {
+            return main.get("temp_min").getAsDouble();
+        }
+
+        public double getTempMax() {
+            return main.get("temp_max").getAsDouble();
+        }
+
+        public double getWindSpeed() {
+            return wind.get("speed").getAsDouble();
+        }
+
+        public double getWindDirection() {
+            return wind.get("deg").getAsDouble();
+        }
+
+        public String getClouds() {
+            return "";
+        }
     }
 }
