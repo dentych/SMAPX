@@ -2,10 +2,6 @@ package group.smapx.assignment2.DAL;
 
 import android.provider.BaseColumns;
 
-/**
- * Created by DSLTEST-UDVIKLER on 27-09-2016.
- */
-
 public class WeatherContract {
     protected WeatherContract() {}
 
@@ -22,9 +18,6 @@ public class WeatherContract {
                     WeatherEntry.WINDDIRECTION + " REAL," +
                     WeatherEntry.CLOUDS + " TEXT" + " )";
 
-
-
-
     public static class WeatherEntry implements BaseColumns {
         public static final String TABLE_NAME = "WEATHER_INFO";
         public static final String TIMESTAMP = "TIMESTAMP";
@@ -36,10 +29,5 @@ public class WeatherContract {
         public static final String WIDNSPEED = "WIDNSPEED";
         public static final String WINDDIRECTION = "WINDDIRECTION";
         public static final String CLOUDS = "CLOUDS";
-
-
-
-
-
     }
 }

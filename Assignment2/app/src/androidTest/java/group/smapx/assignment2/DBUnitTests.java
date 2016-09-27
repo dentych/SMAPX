@@ -51,7 +51,7 @@ public class DBUnitTests {
     @Test
     public void DBShit_CreatingWeatherModel_ExpectNoError(){
         WeatherDAO dao  = new WeatherDAO(new RenamingDelegatingContext(InstrumentationRegistry.getTargetContext(), "test_"));
-        long id = dao.Save(new WeatherModel(new Date().getTime(), 20.00,0, 105.36, 0, 30.00, 20, 120, "None"));
+        long id = dao.save(new WeatherModel(new Date().getTime(), 20.00,0, 105.36, 0, 30.00, 20, 120, "None"));
         Log.d("Test","ID: " + id);
 
         assertTrue(id != -1);
@@ -60,7 +60,7 @@ public class DBUnitTests {
     @Test
     public void DBShit_GetAllData_ExpectNoError(){
         WeatherDAO dao  = new WeatherDAO(new RenamingDelegatingContext(InstrumentationRegistry.getTargetContext(), "test_"));
-        long id = dao.Save(new WeatherModel(new Date().getTime(), 20.00,0, 105.36, 0, 30.00, 20, 120, "None"));
+        long id = dao.save(new WeatherModel(new Date().getTime(), 20.00,0, 105.36, 0, 30.00, 20, 120, "None"));
         Log.d("Test", "Rowcount: " + dao.getProfilesCount());
         List<WeatherModel> models = dao.getAllWeather();
 
@@ -71,7 +71,7 @@ public class DBUnitTests {
     @Test
     public void DBShit_GetDataWithCondition_ExpectNoError(){
         WeatherDAO dao  = new WeatherDAO(new RenamingDelegatingContext(InstrumentationRegistry.getTargetContext(), "test_"));
-        long id = dao.Save(new WeatherModel(new Date().getTime(), 1,2,3,4,5,6,7, "None"));
+        long id = dao.save(new WeatherModel(new Date().getTime(), 1,2,3,4,5,6,7, "None"));
         List<WeatherModel> models = dao.getWeatherForLastDays(2);
         Log.d("Test","Size: " + models.size());
 

@@ -3,34 +3,24 @@ package group.smapx.assignment2.DAL;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Date;
-
-
+import java.util.List;
 
 import group.smapx.assignment2.models.WeatherModel;
-
-/**
- * Created by DSLTEST-UDVIKLER on 27-09-2016.
- */
 
 public class WeatherDAO {
 
     private WeatherDBHelper connection;
 
-    public WeatherDAO(Context context){
+    public WeatherDAO(Context context) {
         connection = WeatherDBHelper.getInstance(context);
     }
 
-
-    public long Save(WeatherModel model){
+    public long save(WeatherModel model) {
         SQLiteDatabase db = connection.getWritableDatabase();
 
         ContentValues vals = new ContentValues();
@@ -42,7 +32,7 @@ public class WeatherDAO {
         vals.put(WeatherContract.WeatherEntry.TEMP_MAX, model.getTemp_max());
         vals.put(WeatherContract.WeatherEntry.WIDNSPEED, model.getWindspeed());
         vals.put(WeatherContract.WeatherEntry.WINDDIRECTION, model.getWinddirection());
-        vals.put(WeatherContract.WeatherEntry.CLOUDS,  model.getClouds());
+        vals.put(WeatherContract.WeatherEntry.CLOUDS, model.getClouds());
 
         long id = db.insert(WeatherContract.WeatherEntry.TABLE_NAME, null, vals);
         Log.d("DAL", "Saved model with ID: " + id);
@@ -50,14 +40,14 @@ public class WeatherDAO {
         return id;
     }
 
-    public  List<WeatherModel> getAllWeather(){
+    public List<WeatherModel> getAllWeather() {
         SQLiteDatabase db = connection.getReadableDatabase();
         String getallQuery = "SELECT  * FROM " + WeatherContract.WeatherEntry.TABLE_NAME;
         Cursor c = db.rawQuery(getallQuery, null);
 
         List<WeatherModel> models = new ArrayList<>();
-        if(c.moveToFirst()){
-            do{
+        if (c.moveToFirst()) {
+            do {
                 Log.d("DAL", "New weathermodel.");
                 WeatherModel model = new WeatherModel(
                         Long.parseLong(c.getString(1)),
@@ -73,7 +63,7 @@ public class WeatherDAO {
 
                 models.add(model);
             }
-            while(c.moveToNext());
+            while (c.moveToNext());
         }
         c.close();
         db.close();
@@ -91,10 +81,7 @@ public class WeatherDAO {
         return cnt;
     }
 
-    public List<WeatherModel> getWeatherForLastDays(int days){
-
-
-
+    public List<WeatherModel> getWeatherForLastDays(int days) {
         SQLiteDatabase db = connection.getReadableDatabase();
         Cursor c = db.query(
                 WeatherContract.WeatherEntry.TABLE_NAME,
@@ -107,20 +94,19 @@ public class WeatherDAO {
         );
 
         List<WeatherModel> models = new ArrayList<>();
-        if(c.moveToFirst()){
-            do{
+        if (c.moveToFirst()) {
+            do {
                 Log.d("DAL", "New weathermodel.");
-                Log.d("Test","1: " + c.getString(0));
-                Log.d("Test","1: " + c.getString(1));
-                Log.d("Test","1: " + c.getString(2));
-                Log.d("Test","1: " + c.getString(3));
-                Log.d("Test","1: " + c.getString(4));
-                Log.d("Test","1: " + c.getString(5));
-                Log.d("Test","1: " + c.getString(6));
-                Log.d("Test","1: " + c.getString(7));
-                Log.d("Test","1: " + c.getString(8));
-                Log.d("Test","1: " + c.getString(9));
-
+                Log.d("Test", "1: " + c.getString(0));
+                Log.d("Test", "1: " + c.getString(1));
+                Log.d("Test", "1: " + c.getString(2));
+                Log.d("Test", "1: " + c.getString(3));
+                Log.d("Test", "1: " + c.getString(4));
+                Log.d("Test", "1: " + c.getString(5));
+                Log.d("Test", "1: " + c.getString(6));
+                Log.d("Test", "1: " + c.getString(7));
+                Log.d("Test", "1: " + c.getString(8));
+                Log.d("Test", "1: " + c.getString(9));
 
                 WeatherModel model = new WeatherModel(
                         Long.parseLong(c.getString(1)),
@@ -136,7 +122,7 @@ public class WeatherDAO {
 
                 models.add(model);
             }
-            while(c.moveToNext());
+            while (c.moveToNext());
         }
         c.close();
         db.close();
@@ -145,30 +131,28 @@ public class WeatherDAO {
         return models;
     }
 
-    public void Delete(WeatherModel model) {
-        if(model.getId() == 0)
+    public void delete(WeatherModel model) {
+        if (model.getId() == 0)
             return;
 
         SQLiteDatabase db = connection.getWritableDatabase();
 
         db.delete(WeatherContract.WeatherEntry.TABLE_NAME,
-                WeatherContract.WeatherEntry._ID+" = ?",
-                new String[] { String.valueOf(model.getId()) });
+                WeatherContract.WeatherEntry._ID + " = ?",
+                new String[]{String.valueOf(model.getId())});
 
         db.close();
-        Log.d("DAL", "Model with ID " + model.getId()  + " Deleted.");
+        Log.d("DAL", "Model with ID " + model.getId() + " deleted.");
     }
 
-
-    private String[] getCondition(int days){
+    private String[] getCondition(int days) {
         long now = new Date().getTime();
-        String[] args = { Long.toString(now - (86400000*days)) };
-        return  args;
+        String[] args = {Long.toString(now - (86400000 * days))};
+        return args;
     }
 
-
-    private String[] getCollumns(){
-        String[] projection ={
+    private String[] getColumns() {
+        String[] projection = {
                 WeatherContract.WeatherEntry._ID,
                 WeatherContract.WeatherEntry.TIMESTAMP,
                 WeatherContract.WeatherEntry.TEMPERATURE,
@@ -178,9 +162,7 @@ public class WeatherDAO {
                 WeatherContract.WeatherEntry.TEMP_MAX,
                 WeatherContract.WeatherEntry.TEMP_MIN,
                 WeatherContract.WeatherEntry.WIDNSPEED,
-                WeatherContract.WeatherEntry.WINDDIRECTION };
+                WeatherContract.WeatherEntry.WINDDIRECTION};
         return projection;
-
-
     }
 }
