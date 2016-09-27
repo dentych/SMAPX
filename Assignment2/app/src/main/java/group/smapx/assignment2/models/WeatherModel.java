@@ -5,12 +5,15 @@ package group.smapx.assignment2.models;
  */
 
 
+import java.sql.Timestamp;
+
 /**
  * Model for weather data.
  * Contains getters and constructor for all parameters
  */
 public class WeatherModel {
-    public WeatherModel(double temperature, double humidity, double pressure, double temp_min, double temp_max, double windspeed, double winddirection, String clouds) {
+    public WeatherModel(long timestamp, double temperature, double humidity, double pressure, double temp_min, double temp_max, double windspeed, double winddirection, String clouds) {
+        this.timestamp = timestamp;
         this.temperature = temperature;
         this.humidity = humidity;
         this.pressure = pressure;
@@ -22,6 +25,8 @@ public class WeatherModel {
     }
 
     /* Members */
+    int id;
+    long timestamp;
     double temperature;
     double humidity;
     double pressure;
@@ -30,6 +35,12 @@ public class WeatherModel {
     double windspeed;
     double winddirection;
     String clouds;
+
+    public void setId(int id) {this.id = id; }
+
+    public int getId() {return  id; }
+
+    public long getTimestamp() { return timestamp; }
 
     public double getTemperature() {
         return temperature;
