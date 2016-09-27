@@ -20,7 +20,7 @@ public class WeatherContract {
                     WeatherEntry.TEMP_MAX + " REAL," +
                     WeatherEntry.WIDNSPEED + " REAL," +
                     WeatherEntry.WINDDIRECTION + " REAL," +
-                    WeatherEntry.CLOUDS + "TEXT" + " )";
+                    WeatherEntry.CLOUDS + " TEXT" + " )";
 
 
 

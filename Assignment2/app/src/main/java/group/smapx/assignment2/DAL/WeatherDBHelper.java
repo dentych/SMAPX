@@ -3,6 +3,7 @@ package group.smapx.assignment2.DAL;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 /**
  * Created by DSLTEST-UDVIKLER on 27-09-2016.
@@ -24,12 +25,13 @@ public class WeatherDBHelper extends SQLiteOpenHelper {
     }
 
 
-    protected WeatherDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    private WeatherDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        Log.d("DAL", "Creating database with " + WeatherContract.SQL_CREATE_ENTRIES);
         db.execSQL(WeatherContract.SQL_CREATE_ENTRIES);
     }
 
