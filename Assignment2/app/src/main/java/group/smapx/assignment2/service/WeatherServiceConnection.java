@@ -4,13 +4,13 @@ import android.content.ComponentName;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
-public class TestConnection implements ServiceConnection {
-    private TestService boundService = null;
+public class WeatherServiceConnection implements ServiceConnection {
+    private WeatherService boundService = null;
     private boolean bound = false;
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-        TestService.LocalBinder binder = (TestService.LocalBinder) service;
+        WeatherService.LocalBinder binder = (WeatherService.LocalBinder) service;
         boundService = binder.getService();
         bound = true;
     }
@@ -20,7 +20,7 @@ public class TestConnection implements ServiceConnection {
         bound = false;
     }
 
-    public TestService getBoundService() {
+    public WeatherService getBoundService() {
         return boundService;
     }
 

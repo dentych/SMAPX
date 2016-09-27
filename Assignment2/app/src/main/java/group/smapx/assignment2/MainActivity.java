@@ -12,11 +12,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import group.smapx.assignment2.service.TestConnection;
-import group.smapx.assignment2.service.TestService;
+import group.smapx.assignment2.service.WeatherServiceConnection;
+import group.smapx.assignment2.service.WeatherService;
 
 public class MainActivity extends AppCompatActivity {
-    TestConnection connection;
+    WeatherServiceConnection connection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +34,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Intent intent = new Intent(getBaseContext(), TestService.class);
+        Intent intent = new Intent(getBaseContext(), WeatherService.class);
         startService(intent);
 
-        connection = new TestConnection();
+        connection = new WeatherServiceConnection();
         bindService(intent, connection, BIND_AUTO_CREATE);
 
         Button button = (Button) findViewById(R.id.button);
