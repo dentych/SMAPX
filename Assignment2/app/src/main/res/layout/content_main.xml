@@ -14,94 +14,93 @@
     tools:showIn="@layout/activity_main">
 
     <RelativeLayout
+        android:id="@+id/currentLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:paddingBottom="25dp"
-        android:id="@+id/currentLayout">
+        android:layout_alignParentTop="true">
 
         <ImageView
+            android:id="@+id/current_weather_pic"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:id="@+id/current_weather_pic"
-            android:src="@drawable/default_weather_pic"
-            android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
+            android:layout_centerInParent="true"
             android:layout_marginLeft="25dp"
             android:layout_marginStart="25dp"
-            android:layout_marginTop="25dp"
-            android:contentDescription="@null" />
+            android:contentDescription="@null"
+            android:src="@drawable/default_weather_pic" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/current_weather_pic"
-            android:layout_toEndOf="@+id/current_weather_pic"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp">
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/current_weather_pic"
+            android:layout_toRightOf="@+id/current_weather_pic">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/currentWeather_label"
                 android:id="@+id/current_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:text="@string/currentWeather_label"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/no_data"
                 android:id="@+id/current_description_text"
-                android:layout_below="@+id/current_label"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
-
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/no_data"
-                android:id="@+id/current_temperature_text"
-                android:layout_below="@+id/current_description_text"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"/>
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/current_label"
+                android:text="@string/no_data"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/current_temperature_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/current_description_text"
+                android:text="@string/no_data"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
         </RelativeLayout>
     </RelativeLayout>
 
     <View
+        android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/currentLayout"
-        android:background="@android:color/darker_gray"
-        android:id="@+id/view"/>
+        android:layout_marginTop="10dp"
+        android:background="@android:color/darker_gray" />
 
     <TextView
-        android:text="@string/listView_label"
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_below="@+id/view"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/textView"
-        android:layout_marginTop="10dp"
+        android:layout_below="@+id/view"
         android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"/>
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/listView_label"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <ListView
+        android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/textView"
         android:layout_alignLeft="@+id/textView"
         android:layout_alignStart="@+id/textView"
-        android:layout_marginTop="10dp"
-        android:id="@+id/listView" />
+        android:layout_below="@+id/textView"
+        android:layout_marginTop="10dp" />
 </RelativeLayout>

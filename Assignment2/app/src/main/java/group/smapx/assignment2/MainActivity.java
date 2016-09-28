@@ -14,9 +14,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import java.util.List;
-
 import group.smapx.assignment2.models.WeatherAdaptor;
 import group.smapx.assignment2.models.WeatherModel;
 import group.smapx.assignment2.service.ConnectionCallback;
@@ -47,17 +45,13 @@ public class MainActivity extends AppCompatActivity {
         connection = new WeatherServiceConnection(new ConnectionCallback() {
             @Override
             public void connected() {
+
                 setupAdaptor();
-
                 wm = connection.getBoundService().getCurrentWeather();
-
-                Log.d("Main", "" + wm.getTemperature() );
-                Log.d("Main", "Wow, dennis er en lille luder");
             }
         });
         bindService(intent, connection, BIND_AUTO_CREATE);
 
-        //if data was received, insert data.
         if(wm != null) {
             currentDesc.setText(wm.getClouds());
             currentTemp.setText(String.valueOf(wm.getTemperature()));
@@ -69,23 +63,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-//                if(connection != null) {
-//                    wm = connection.getBoundService().getCurrentWeather();
-//                }
-
                 if(wm != null) {
                     currentDesc.setText(wm.getClouds());
-                    currentTemp.setText(String.valueOf(wm.getTemperature()));
+                    currentTemp.setText(String.valueOf(wm.getTemperature()) + " \u00b0C");
                     currentWeatherPic.setImageResource(weatherAdaptor.setupPicture(wm.getClouds()));
                 }
-
-                Log.d("Main", "" + wm);
             }
         });
 
         // Example on how to register the broadcast from WeatherService.
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver,
                 new IntentFilter(WeatherService.BROADCAST_ACTION));
+
+        Log.d("Main", "OnCreate finished");
     }
 
     private void setupAdaptor() {
@@ -99,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         weatherModelList = connection.getBoundService().getPastWeather();
         if(weatherModelList != null) {
             weatherAdaptor.addAll(weatherModelList);
+            weatherAdaptor.notifyDataSetChanged();
         }
     }
 
@@ -110,7 +101,16 @@ public class MainActivity extends AppCompatActivity {
 
             if (message == 1 && connection.isBound()) {
                 WeatherModel weatherModel = connection.getBoundService().getCurrentWeather();
-                // TODO: Do stuff in UI with weatherModel
+
+                TextView currentDesc = (TextView)findViewById(R.id.current_description_text);
+                TextView currentTemp = (TextView)findViewById(R.id.current_temperature_text);
+                ImageView currentWeatherPic = (ImageView)findViewById(R.id.current_weather_pic);
+
+                currentDesc.setText(weatherModel.getClouds());
+                currentTemp.setText(String.valueOf(weatherModel.getTemperature()) + " \u00b0C");
+                currentWeatherPic.setImageResource(weatherAdaptor.setupPicture(weatherModel.getClouds()));
+
+                Log.d("Main", "Placed current info");
             }
         }
     };

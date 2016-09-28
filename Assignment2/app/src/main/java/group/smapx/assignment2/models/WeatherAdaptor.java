@@ -8,11 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import java.util.Calendar;
-import java.util.Date;
+import java.util.TimeZone;
 
-import group.smapx.assignment2.MainActivity;
 import group.smapx.assignment2.R;
 
 public class WeatherAdaptor extends ArrayAdapter<WeatherModel> {
@@ -48,20 +46,20 @@ public class WeatherAdaptor extends ArrayAdapter<WeatherModel> {
 
             //should be changed to form 15-08-2016
             TextView date = (TextView)convertView.findViewById(R.id.date_text);
-            Calendar cal = Calendar.getInstance();
+            Calendar cal = Calendar.getInstance(TimeZone.getDefault());
             cal.setTimeInMillis(wm.getTimestamp());
 
             String day = String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
-            String month = String.valueOf(cal.get(Calendar.MONTH));
+            //month +1 since the calendar api count the twelve months from 0-11 instead of 1-12
+            String month = String.valueOf(cal.get(Calendar.MONTH) + 1);
             String year = String.valueOf(cal.get(Calendar.YEAR));
 
             date.setText(day + "-" + month + "-" + year);
 
             //should be changed to form 18:00
             TextView time = (TextView)convertView.findViewById(R.id.time_text);
-            String hour = String.valueOf(cal.get(Calendar.HOUR_OF_DAY));
-            String minute = String.valueOf(cal.get(Calendar.MINUTE));
-
+            String hour = String.format("%02d", cal.get(Calendar.HOUR_OF_DAY));
+            String minute = String.format("%02d", cal.get(Calendar.MINUTE));
             time.setText(hour + ":" + minute);
         }
 
