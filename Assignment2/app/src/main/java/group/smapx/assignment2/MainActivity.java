@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
 
     private WeatherAdaptor weatherAdaptor;
     private ListView weatherListView;
+    private WeatherModel wm = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
         final TextView currentDesc = (TextView)findViewById(R.id.current_description_text);
         final TextView currentTemp = (TextView)findViewById(R.id.current_temperature_text);
+        final ImageView currentWeatherPic = (ImageView)findViewById(R.id.current_weather_pic);
 
         Intent intent = new Intent(getBaseContext(), WeatherService.class);
         startService(intent);
@@ -45,19 +49,40 @@ public class MainActivity extends AppCompatActivity {
         connection = new WeatherServiceConnection();
         bindService(intent, connection, BIND_AUTO_CREATE);
 
+        setupAdaptor();
+
+        //if a connection is active get current weather
+        if(connection != null) {
+            wm = connection.getBoundService().getCurrentWeather();
+        }
+
+        //if data was received, insert data.
+        if(wm != null) {
+            currentDesc.setText(wm.getClouds());
+            currentTemp.setText(String.valueOf(wm.getTemperature()));
+            currentWeatherPic.setImageResource(weatherAdaptor.setupPicture(wm.getClouds()));
+        }
+
+
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                WeatherModel wm = connection.getBoundService().getCurrentWeather();
-//                currentDesc.setText(wm.getClouds());
-//                currentTemp.setText(String.valueOf(wm.getTemperature()));
+                if(connection != null) {
+                    wm = connection.getBoundService().getCurrentWeather();
+                }
+
+                if(wm != null) {
+                    currentDesc.setText(wm.getClouds());
+                    currentTemp.setText(String.valueOf(wm.getTemperature()));
+                    currentWeatherPic.setImageResource(weatherAdaptor.setupPicture(wm.getClouds()));
+                }
+
                 Log.d("Main", "" + wm);
             }
         });
-
-        setupAdaptor();
     }
 
     private void setupAdaptor() {
@@ -73,4 +98,6 @@ public class MainActivity extends AppCompatActivity {
 //            weatherAdaptor.addAll(weatherModelList);
 //        }
     }
+
+
 }
