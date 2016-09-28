@@ -32,7 +32,7 @@ public class WeatherDAO {
         vals.put(WeatherContract.WeatherEntry.TEMP_MAX, model.getTemp_max());
         vals.put(WeatherContract.WeatherEntry.WIDNSPEED, model.getWindspeed());
         vals.put(WeatherContract.WeatherEntry.WINDDIRECTION, model.getWinddirection());
-        vals.put(WeatherContract.WeatherEntry.CLOUDS, model.getClouds());
+        vals.put(WeatherContract.WeatherEntry.DESCRIPTION, model.getDescription());
 
         long id = db.insert(WeatherContract.WeatherEntry.TABLE_NAME, null, vals);
         Log.d("DAL", "Saved model with ID: " + id);
@@ -156,7 +156,7 @@ public class WeatherDAO {
                 WeatherContract.WeatherEntry._ID,
                 WeatherContract.WeatherEntry.TIMESTAMP,
                 WeatherContract.WeatherEntry.TEMPERATURE,
-                WeatherContract.WeatherEntry.CLOUDS,
+                WeatherContract.WeatherEntry.DESCRIPTION,
                 WeatherContract.WeatherEntry.HUMIDITY,
                 WeatherContract.WeatherEntry.PRESSURE,
                 WeatherContract.WeatherEntry.TEMP_MAX,
