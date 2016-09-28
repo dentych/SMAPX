@@ -1,9 +1,13 @@
 package group.smapx.assignment2;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -12,12 +16,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import group.smapx.assignment2.service.WeatherServiceConnection;
+import group.smapx.assignment2.models.WeatherModel;
 import group.smapx.assignment2.service.WeatherService;
+import group.smapx.assignment2.service.WeatherServiceConnection;
 
 public class MainActivity extends AppCompatActivity {
     WeatherServiceConnection connection;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(getBaseContext(), WeatherService.class);
         startService(intent);
 
-        connection = new WeatherServiceConnection();
+        connection = new WeatherServiceConnection(null);
         bindService(intent, connection, BIND_AUTO_CREATE);
 
         Button button = (Button) findViewById(R.id.button);
@@ -47,7 +51,24 @@ public class MainActivity extends AppCompatActivity {
                 Object object = connection.getBoundService().getCurrentWeather();
             }
         });
+
+        // Example on how to register the broadcast from WeatherService.
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver,
+                new IntentFilter(WeatherService.BROADCAST_ACTION));
     }
+
+    // This is an example of how to use the broadcasting from WeatherService.
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int message = intent.getIntExtra("message", 0);
+
+            if (message == 1 && connection.isBound()) {
+                WeatherModel weatherModel = connection.getBoundService().getCurrentWeather();
+                // TODO: Do stuff in UI with weatherModel
+            }
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
