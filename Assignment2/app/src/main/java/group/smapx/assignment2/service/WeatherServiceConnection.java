@@ -7,12 +7,18 @@ import android.os.IBinder;
 public class WeatherServiceConnection implements ServiceConnection {
     private WeatherService boundService = null;
     private boolean bound = false;
+    private ConnectionCallback callback;
+
+    public WeatherServiceConnection(ConnectionCallback callback) {
+        this.callback = callback;
+    }
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         WeatherService.LocalBinder binder = (WeatherService.LocalBinder) service;
         boundService = binder.getService();
         bound = true;
+        callback.connected();
     }
 
     @Override

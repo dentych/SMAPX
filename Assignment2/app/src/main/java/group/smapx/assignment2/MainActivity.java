@@ -12,8 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import group.smapx.assignment2.service.WeatherServiceConnection;
 import group.smapx.assignment2.service.WeatherService;
+import group.smapx.assignment2.service.WeatherServiceConnection;
 
 public class MainActivity extends AppCompatActivity {
     WeatherServiceConnection connection;
@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(getBaseContext(), WeatherService.class);
         startService(intent);
 
-        connection = new WeatherServiceConnection();
+        connection = new WeatherServiceConnection(null);
         bindService(intent, connection, BIND_AUTO_CREATE);
 
         Button button = (Button) findViewById(R.id.button);
