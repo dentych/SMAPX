@@ -16,7 +16,7 @@ public class WeatherContract {
                     WeatherEntry.TEMP_MAX + " REAL," +
                     WeatherEntry.WIDNSPEED + " REAL," +
                     WeatherEntry.WINDDIRECTION + " REAL," +
-                    WeatherEntry.CLOUDS + " TEXT" + " )";
+                    WeatherEntry.DESCRIPTION + " TEXT" + " )";
 
     public static class WeatherEntry implements BaseColumns {
         public static final String TABLE_NAME = "WEATHER_INFO";
@@ -28,6 +28,6 @@ public class WeatherContract {
         public static final String TEMP_MAX = "TEMP_MAX";
         public static final String WIDNSPEED = "WIDNSPEED";
         public static final String WINDDIRECTION = "WINDDIRECTION";
-        public static final String CLOUDS = "CLOUDS";
+        public static final String DESCRIPTION = "DESCRIPTION";
     }
 }

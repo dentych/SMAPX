@@ -83,7 +83,7 @@ public class DBUnitTests {
         assertTrue(models.get(0).getTemp_max() == 5);
         assertTrue(models.get(0).getWindspeed() == 6);
         assertTrue(models.get(0).getWinddirection() == 7);
-        assertTrue(models.get(0).getClouds().equals("None"));
+        assertTrue(models.get(0).getDescription().equals("None"));
 
 
     }
