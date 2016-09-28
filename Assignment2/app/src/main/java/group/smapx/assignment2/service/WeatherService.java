@@ -231,7 +231,7 @@ public class WeatherService extends Service {
             if (!isConnectedToInternet()) {
                 return;
             }
-            URL url = tryGetUrl("http://api.openweathermap.org/data/2.5/weather?q=Aarhus&units=metric&APPID=" +
+            URL url = tryGetUrl("http://api.openweathermap.org/data/2.5/weather?q=Aarhus,DK&units=metric&APPID=" +
                     getString(R.string.api_key));
             if (url == null) {
                 return;

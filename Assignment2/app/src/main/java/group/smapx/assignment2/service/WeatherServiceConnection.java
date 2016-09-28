@@ -9,6 +9,10 @@ public class WeatherServiceConnection implements ServiceConnection {
     private boolean bound = false;
     private ConnectionCallback callback;
 
+    /**
+     * Constructor
+     * @param callback Callback class that is called when the service is bound correctly.
+     */
     public WeatherServiceConnection(ConnectionCallback callback) {
         this.callback = callback;
     }
@@ -18,7 +22,7 @@ public class WeatherServiceConnection implements ServiceConnection {
         WeatherService.LocalBinder binder = (WeatherService.LocalBinder) service;
         boundService = binder.getService();
         bound = true;
-        callback.connected();
+        callback.connected(boundService);
     }
 
     @Override
