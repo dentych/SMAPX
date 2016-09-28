@@ -6,11 +6,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Binder;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.BufferedReader;
@@ -26,12 +26,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import group.smapx.assignment2.DAL.WeatherDAO;
-import group.smapx.assignment2.NotImplementedException;
 import group.smapx.assignment2.R;
 import group.smapx.assignment2.models.WeatherModel;
 
 public class WeatherService extends Service {
     private static final String LOG_TAG = "WeatherService";
+    public static final String BROADCAST_ACTION = "group.smapx.assignment2.service.WeatherServiceBroadcast";
+    public static final int MSG_NEW_WEATHER = 1;
     private IBinder binder = new LocalBinder();
     private Timer timer = null;
     private WeatherDAO weatherDAO;
@@ -253,6 +254,7 @@ public class WeatherService extends Service {
                 }
                 WeatherModel weatherInfo = parseResult(result.toString());
                 long id = weatherDAO.save(weatherInfo);
+                sendWeatherBroadcast();
                 Log.d(LOG_TAG, "WeatherModel object saved in database with ID: " + id);
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error when trying to fetch weather data", e);
@@ -265,6 +267,12 @@ public class WeatherService extends Service {
                     }
                 }
             }
+        }
+
+        private void sendWeatherBroadcast() {
+            Intent intent = new Intent(BROADCAST_ACTION);
+            intent.putExtra("message", MSG_NEW_WEATHER);
+            LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(intent);
         }
     }
 }
