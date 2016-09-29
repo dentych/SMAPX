@@ -9,5 +9,5 @@ public interface ConnectionCallback {
     /**
      * Called when the service is bound.
      */
-    public void connected(Service service);
+    public void connected(WeatherService service);
 }

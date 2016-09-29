@@ -96,18 +96,6 @@ public class WeatherDAO {
         List<WeatherModel> models = new ArrayList<>();
         if (c.moveToFirst()) {
             do {
-                Log.d("DAL", "New weathermodel.");
-                Log.d("Test", "1: " + c.getString(0));
-                Log.d("Test", "1: " + c.getString(1));
-                Log.d("Test", "1: " + c.getString(2));
-                Log.d("Test", "1: " + c.getString(3));
-                Log.d("Test", "1: " + c.getString(4));
-                Log.d("Test", "1: " + c.getString(5));
-                Log.d("Test", "1: " + c.getString(6));
-                Log.d("Test", "1: " + c.getString(7));
-                Log.d("Test", "1: " + c.getString(8));
-                Log.d("Test", "1: " + c.getString(9));
-
                 WeatherModel model = new WeatherModel(
                         Long.parseLong(c.getString(1)),
                         Double.parseDouble(c.getString(2)),

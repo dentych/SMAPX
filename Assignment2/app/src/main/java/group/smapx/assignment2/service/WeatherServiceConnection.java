@@ -28,6 +28,7 @@ public class WeatherServiceConnection implements ServiceConnection {
     @Override
     public void onServiceDisconnected(ComponentName name) {
         bound = false;
+        boundService = null;
     }
 
     public WeatherService getBoundService() {
@@ -36,5 +37,9 @@ public class WeatherServiceConnection implements ServiceConnection {
 
     public boolean isBound() {
         return bound;
+    }
+
+    public void setBound(boolean bound) {
+        this.bound = bound;
     }
 }

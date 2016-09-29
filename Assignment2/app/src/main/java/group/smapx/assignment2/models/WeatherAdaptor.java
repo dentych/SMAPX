@@ -33,11 +33,11 @@ public class WeatherAdaptor extends ArrayAdapter<WeatherModel> {
 
             //Image
             ImageView weatherImage = (ImageView)convertView.findViewById(R.id.weather_pic);
-            weatherImage.setImageResource(setupPicture(wm.getClouds()));
+            weatherImage.setImageResource(setupPicture(wm.getDescription()));
 
             //Weather description
             TextView description = (TextView)convertView.findViewById(R.id.description_text);
-            description.setText(wm.getClouds());
+            description.setText(wm.getDescription());
 
             //Temp text
             TextView temperature = (TextView)convertView.findViewById(R.id.temperature_text);
@@ -51,7 +51,7 @@ public class WeatherAdaptor extends ArrayAdapter<WeatherModel> {
 
             String day = String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
             //month +1 since the calendar api count the twelve months from 0-11 instead of 1-12
-            String month = String.valueOf(cal.get(Calendar.MONTH) + 1);
+            String month = String.format("%02d", cal.get(Calendar.MONTH) + 1);
             String year = String.valueOf(cal.get(Calendar.YEAR));
 
             date.setText(day + "-" + month + "-" + year);
@@ -69,17 +69,22 @@ public class WeatherAdaptor extends ArrayAdapter<WeatherModel> {
     public int setupPicture(String description) {
 
         int weatherIcon = R.drawable.default_weather_pic;
-        switch (description) {
-            case "Sun":
+        switch (description.toLowerCase()) {
+            case "sun":
+            case "clear":
+            case "atmosphere":
                 weatherIcon = R.drawable.ic_sun;
                 break;
-            case "Cloud":
+            case "clouds":
+            case "extreme":
                 weatherIcon = R.drawable.ic_cloud;
                 break;
-            case "Rain":
+            case "rain":
+            case "thunderstorm":
+            case "drizzle":
                 weatherIcon = R.drawable.ic_rain;
                 break;
-            case "Snow":
+            case "snow":
                 weatherIcon = R.drawable.ic_snow;
                 break;
         }
