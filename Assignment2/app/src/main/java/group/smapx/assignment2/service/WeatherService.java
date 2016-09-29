@@ -21,6 +21,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -30,14 +31,15 @@ import group.smapx.assignment2.R;
 import group.smapx.assignment2.models.WeatherModel;
 
 public class WeatherService extends Service {
-    private static final String LOG_TAG = "WeatherService";
     public static final String BROADCAST_ACTION = "group.smapx.assignment2.service.WeatherServiceBroadcast";
     public static final int MSG_NEW_WEATHER = 1;
+    private static final String LOG_TAG = "WeatherService";
+    private static final long WAIT_TIME_MILLIS = 30 * 60 * 1000;
     private IBinder binder = new LocalBinder();
     private Timer timer = null;
     private WeatherDAO weatherDAO;
-    private static final long WAIT_TIME_MILLIS = 30 * 60 * 1000;
     private WeatherModel currentWeather = null;
+    private boolean running = false;
 
     /*
     PUBLIC METHODS
@@ -77,12 +79,26 @@ public class WeatherService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(LOG_TAG, "onStartCommand!");
 
-        if (timer == null) {
-            timer = new Timer();
-        }
+        if (!running) {
+            if (timer == null) {
+                timer = new Timer();
+            }
 
-        // Setup timer for getting weather data.
-        timer.scheduleAtFixedRate(new WeatherTimerTask(), 1000, WAIT_TIME_MILLIS);
+            // Setup timer for getting weather data.
+            long delay = 1000;
+            if (currentWeather != null) {
+                long currentTime = Calendar.getInstance().getTimeInMillis();
+                long timeSinceLastWeatherInfo = currentTime - currentWeather.getTimestamp();
+                if (timeSinceLastWeatherInfo < WAIT_TIME_MILLIS) {
+                    delay = WAIT_TIME_MILLIS - timeSinceLastWeatherInfo;
+                    Log.d(LOG_TAG, "Delay set to " + (delay / 1000 / 60) + " minutes...");
+                }
+            }
+            timer.scheduleAtFixedRate(new WeatherTimerTask(), delay, WAIT_TIME_MILLIS);
+            running = true;
+
+            Log.d(LOG_TAG, "Timer started!");
+        }
 
         return START_STICKY;
     }
@@ -116,7 +132,9 @@ public class WeatherService extends Service {
      * @return List of WeatherModel objects.
      */
     public List<WeatherModel> getPastWeather(int days) {
-        return weatherDAO.getWeatherForLastDays(days);
+        List<WeatherModel> pastWeather = weatherDAO.getWeatherForLastDays(days);
+        Collections.reverse(pastWeather);
+        return pastWeather;
     }
 
     /*
@@ -133,27 +151,6 @@ public class WeatherService extends Service {
         return url;
     }
 
-    private WeatherModel parseResult(String result) {
-        Log.d(LOG_TAG, "Parsing weather info from result: " + result);
-
-        long timestamp = Calendar.getInstance().getTime().getTime();
-        Gson gson = new Gson();
-        WeatherJsonObject weatherObject = gson.fromJson(result, WeatherJsonObject.class);
-
-        WeatherModel weatherInfo = new WeatherModel(
-                timestamp,
-                weatherObject.getTemperature(),
-                weatherObject.getHumidity(),
-                weatherObject.getPressure(),
-                weatherObject.getTempMin(),
-                weatherObject.getTempMax(),
-                weatherObject.getWindSpeed(),
-                weatherObject.getWindDirection(),
-                weatherObject.getClouds()
-        );
-
-        return weatherInfo;
-    }
 
     /**
      * Used to bind the service from an Activity
@@ -182,6 +179,7 @@ public class WeatherService extends Service {
         private JsonObject wind;
         private JsonObject clouds;
         private JsonObject rain;
+        private JsonObject snow;
         private int dt;
         private JsonObject sys;
         private int id;
@@ -216,8 +214,8 @@ public class WeatherService extends Service {
             return wind.get("deg").getAsDouble();
         }
 
-        String getClouds() {
-            return "";
+        String getDescription() {
+            return weather.get(0).getAsJsonObject().get("main").getAsString();
         }
     }
 
@@ -255,6 +253,7 @@ public class WeatherService extends Service {
                 WeatherModel weatherInfo = parseResult(result.toString());
                 long id = weatherDAO.save(weatherInfo);
                 sendWeatherBroadcast();
+                currentWeather = weatherInfo;
                 Log.d(LOG_TAG, "WeatherModel object saved in database with ID: " + id);
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error when trying to fetch weather data", e);
@@ -273,6 +272,28 @@ public class WeatherService extends Service {
             Intent intent = new Intent(BROADCAST_ACTION);
             intent.putExtra("message", MSG_NEW_WEATHER);
             LocalBroadcastManager.getInstance(getBaseContext()).sendBroadcast(intent);
+        }
+
+        private WeatherModel parseResult(String result) {
+            Log.d(LOG_TAG, "Parsing weather info from result: " + result);
+
+            long timestamp = Calendar.getInstance().getTime().getTime();
+            Gson gson = new Gson();
+            WeatherJsonObject weatherObject = gson.fromJson(result, WeatherJsonObject.class);
+
+            WeatherModel weatherInfo = new WeatherModel(
+                    timestamp,
+                    weatherObject.getTemperature(),
+                    weatherObject.getHumidity(),
+                    weatherObject.getPressure(),
+                    weatherObject.getTempMin(),
+                    weatherObject.getTempMax(),
+                    weatherObject.getWindSpeed(),
+                    weatherObject.getWindDirection(),
+                    weatherObject.getDescription()
+            );
+
+            return weatherInfo;
         }
     }
 }
