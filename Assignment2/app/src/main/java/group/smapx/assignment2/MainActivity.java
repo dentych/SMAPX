@@ -6,22 +6,28 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
-
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+import java.util.List;
+import group.smapx.assignment2.models.WeatherAdaptor;
 import group.smapx.assignment2.models.WeatherModel;
+import group.smapx.assignment2.service.ConnectionCallback;
 import group.smapx.assignment2.service.WeatherService;
 import group.smapx.assignment2.service.WeatherServiceConnection;
 
 public class MainActivity extends AppCompatActivity {
     WeatherServiceConnection connection;
+
+    private WeatherAdaptor weatherAdaptor;
+    private ListView weatherListView;
+    private WeatherModel wm = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,32 +35,62 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        final TextView currentDesc = (TextView)findViewById(R.id.current_description_text);
+        final TextView currentTemp = (TextView)findViewById(R.id.current_temperature_text);
+        final ImageView currentWeatherPic = (ImageView)findViewById(R.id.current_weather_pic);
 
         Intent intent = new Intent(getBaseContext(), WeatherService.class);
         startService(intent);
 
-        connection = new WeatherServiceConnection(null);
+        connection = new WeatherServiceConnection(new ConnectionCallback() {
+            @Override
+            public void connected() {
+
+                setupAdaptor();
+                wm = connection.getBoundService().getCurrentWeather();
+            }
+        });
         bindService(intent, connection, BIND_AUTO_CREATE);
 
-        Button button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
+        if(wm != null) {
+            currentDesc.setText(wm.getClouds());
+            currentTemp.setText(String.valueOf(wm.getTemperature()));
+            currentWeatherPic.setImageResource(weatherAdaptor.setupPicture(wm.getClouds()));
+        }
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Object object = connection.getBoundService().getCurrentWeather();
+            public void onClick(View view) {
+
+                if(wm != null) {
+                    currentDesc.setText(wm.getClouds());
+                    currentTemp.setText(String.valueOf(wm.getTemperature()) + " \u00b0C");
+                    currentWeatherPic.setImageResource(weatherAdaptor.setupPicture(wm.getClouds()));
+                }
             }
         });
 
         // Example on how to register the broadcast from WeatherService.
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver,
                 new IntentFilter(WeatherService.BROADCAST_ACTION));
+
+        Log.d("Main", "OnCreate finished");
+    }
+
+    private void setupAdaptor() {
+        weatherAdaptor = new WeatherAdaptor(this, android.R.layout.simple_list_item_1);
+
+        weatherListView = (ListView)findViewById(R.id.listView);
+
+        weatherListView.setAdapter(weatherAdaptor);
+
+        List<WeatherModel> weatherModelList;
+        weatherModelList = connection.getBoundService().getPastWeather();
+        if(weatherModelList != null) {
+            weatherAdaptor.addAll(weatherModelList);
+            weatherAdaptor.notifyDataSetChanged();
+        }
     }
 
     // This is an example of how to use the broadcasting from WeatherService.
@@ -65,34 +101,17 @@ public class MainActivity extends AppCompatActivity {
 
             if (message == 1 && connection.isBound()) {
                 WeatherModel weatherModel = connection.getBoundService().getCurrentWeather();
-                // TODO: Do stuff in UI with weatherModel
+
+                TextView currentDesc = (TextView)findViewById(R.id.current_description_text);
+                TextView currentTemp = (TextView)findViewById(R.id.current_temperature_text);
+                ImageView currentWeatherPic = (ImageView)findViewById(R.id.current_weather_pic);
+
+                currentDesc.setText(weatherModel.getClouds());
+                currentTemp.setText(String.valueOf(weatherModel.getTemperature()) + " \u00b0C");
+                currentWeatherPic.setImageResource(weatherAdaptor.setupPicture(weatherModel.getClouds()));
+
+                Log.d("Main", "Placed current info");
             }
         }
     };
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void serviceResponse(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-    }
 }
