@@ -30,6 +30,10 @@ public class MainActivity extends AppCompatActivity {
     private ListView weatherListView;
     private static WeatherModel wm = null;
 
+    private TextView currentDesc;
+    private TextView currentTemp;
+    private ImageView currentWeatherPic;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,9 +41,9 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final TextView currentDesc = (TextView) findViewById(R.id.current_description_text);
-        final TextView currentTemp = (TextView) findViewById(R.id.current_temperature_text);
-        final ImageView currentWeatherPic = (ImageView) findViewById(R.id.current_weather_pic);
+        currentDesc = (TextView) findViewById(R.id.current_description_text);
+        currentTemp = (TextView) findViewById(R.id.current_temperature_text);
+        currentWeatherPic = (ImageView) findViewById(R.id.current_weather_pic);
 
         Intent intent = new Intent(getBaseContext(), WeatherService.class);
         startService(intent);
@@ -47,14 +51,9 @@ public class MainActivity extends AppCompatActivity {
         connection = new WeatherServiceConnection(new ConnectionCallback() {
             @Override
             public void connected(WeatherService service) {
-
                 setupAdaptor();
                 wm = service.getCurrentWeather();
-                if (wm != null) {
-                    currentDesc.setText(wm.getDescription());
-                    currentTemp.setText(String.valueOf(wm.getTemperature()));
-                    currentWeatherPic.setImageResource(weatherAdaptor.setupPicture(wm.getDescription()));
-                }
+                updateCurrentWeatherBar();
             }
         });
 
@@ -62,12 +61,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                if (wm != null) {
-                    currentDesc.setText(wm.getDescription());
-                    currentTemp.setText(String.valueOf(wm.getTemperature()) + " \u00b0C");
-                    currentWeatherPic.setImageResource(weatherAdaptor.setupPicture(wm.getDescription()));
-                }
+                updateCurrentWeatherBar();
             }
         });
 
@@ -76,6 +70,15 @@ public class MainActivity extends AppCompatActivity {
                 new IntentFilter(WeatherService.BROADCAST_ACTION));
 
         Log.d("Main", "OnCreate finished");
+    }
+
+    private void updateCurrentWeatherBar() {
+        if (wm != null) {
+            currentDesc.setText(wm.getDescription());
+            String temperature = wm.getTemperature() + " \u00b0C";
+            currentTemp.setText(String.valueOf(temperature));
+            currentWeatherPic.setImageResource(weatherAdaptor.setupPicture(wm.getDescription()));
+        }
     }
 
     @Override
