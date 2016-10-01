@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.Calendar;
 import java.util.List;
 
 import group.smapx.assignment2.models.WeatherAdaptor;
@@ -126,15 +127,25 @@ public class MainActivity extends AppCompatActivity {
             if (message == 1 && connection.isBound()) {
                 WeatherModel weatherModel = connection.getBoundService().getCurrentWeather();
 
-                TextView currentDesc = (TextView) findViewById(R.id.current_description_text);
-                TextView currentTemp = (TextView) findViewById(R.id.current_temperature_text);
-                ImageView currentWeatherPic = (ImageView) findViewById(R.id.current_weather_pic);
-
-                currentDesc.setText(weatherModel.getDescription());
-                currentTemp.setText(String.valueOf(weatherModel.getTemperature()) + " \u00b0C");
-                currentWeatherPic.setImageResource(weatherAdaptor.setupPicture(weatherModel.getDescription()));
+                updateCurrentWeatherBar();
 
                 weatherAdaptor.insert(connection.getBoundService().getCurrentWeather(), 0);
+
+                long currentTime = Calendar.getInstance().getTimeInMillis();
+                long dayInMillis = 24 * 60 * 60 * 1000;
+                long timePassed;
+                do {
+                    int cursor = weatherAdaptor.getCount() - 1;
+                    WeatherModel weather = weatherAdaptor.getItem(cursor);
+                    if (weather != null) {
+                        timePassed = currentTime - weather.getTimestamp();
+                    } else {
+                        timePassed = 0;
+                    }
+                    if (timePassed > dayInMillis) {
+                        weatherAdaptor.remove(weather);
+                    }
+                } while (timePassed > dayInMillis);
                 Log.d("Main", "Placed current info");
             }
         }
