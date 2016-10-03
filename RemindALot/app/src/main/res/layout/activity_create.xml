@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_create"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="group.smapx.remindalot.CreateActivity">
+
+
+    <TextView
+        android:id="@+id/participants_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:text="Participants:" />
+
+
+    <View
+        android:id="@+id/seperator1"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/participants_label"
+        android:layout_marginTop="30dp"
+        android:background="@android:color/darker_gray" />
+
+    <TextView
+        android:id="@+id/description_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/participants_label"
+        android:layout_alignStart="@+id/participants_label"
+        android:layout_below="@+id/seperator1"
+        android:layout_marginTop="10dp"
+        android:text="Description:" />
+
+    <TextView
+        android:id="@+id/remind_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView3"
+        android:layout_alignStart="@+id/textView3"
+        android:layout_below="@+id/description_label"
+        android:layout_marginTop="80dp"
+        android:text="Remind me @" />
+
+    <View
+        android:id="@+id/seperator2"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/remind_label"
+        android:layout_marginTop="40dp"
+        android:background="@android:color/darker_gray" />
+
+    <TextView
+        android:id="@+id/transport_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/remind_label"
+        android:layout_alignStart="@+id/remind_label"
+        android:layout_below="@+id/seperator2"
+        android:layout_marginTop="10dp"
+        android:text="Transportation" />
+
+
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/description_label"
+        android:layout_alignStart="@+id/description_label"
+        android:layout_below="@+id/transport_label"
+        android:layout_marginTop="39dp"
+        android:text="Place:" />
+
+</RelativeLayout>
