@@ -1,24 +1,32 @@
 package group.smapx.remindalot.model;
 
-import android.location.Address;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import group.smapx.remindalot.Contact;
-
 public class Reminder implements Serializable {
+    private long id;
     private String title;
     private String description;
     private long date;
     private ArrayList<Contact> contacts;
     private LocationData locationData;
 
+    public Reminder() {
+    }
+
     public Reminder(String title, String description, long date, ArrayList<Contact> contacts) {
         this.title = title;
         this.description = description;
         this.date = date;
         this.contacts = contacts;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getTitle() {
