@@ -1,16 +1,18 @@
-package group.smapx.remindalot;
+package group.smapx.remindalot.model;
 
 import android.location.Address;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import group.smapx.remindalot.Contact;
+
 public class Reminder implements Serializable {
     private String title;
     private String description;
     private long date;
     private ArrayList<Contact> contacts;
-    private Address address;
+    private LocationData locationData;
 
     public Reminder(String title, String description, long date, ArrayList<Contact> contacts) {
         this.title = title;
@@ -49,5 +51,13 @@ public class Reminder implements Serializable {
 
     public void setContacts(ArrayList<Contact> contacts) {
         this.contacts = contacts;
+    }
+
+    public LocationData getLocationData() {
+        return locationData;
+    }
+
+    public void setLocationData(LocationData locationData) {
+        this.locationData = locationData;
     }
 }
