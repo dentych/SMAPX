@@ -11,8 +11,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
+
+import group.smapx.remindalot.model.LocationData;
+import group.smapx.remindalot.model.Reminder;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
         Reminder reminder = new Reminder("Titel", "Forklaring", new Date().getTime(), contacts);
         adapter.add(reminder);
+        reminder.setLocationData(new LocationData("50", "10", "Some address in tyskland"));
         listReminder.setAdapter(adapter);
 
         listReminder.setOnItemClickListener(new AdapterView.OnItemClickListener() {

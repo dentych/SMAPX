@@ -22,6 +22,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.Date;
 
+import group.smapx.remindalot.model.LocationData;
+import group.smapx.remindalot.model.Reminder;
+
 public class ShowActivity extends AppCompatActivity implements OnMapReadyCallback {
     private LinearLayout listContacts;
     private MapFragment fragment;
@@ -33,22 +36,14 @@ public class ShowActivity extends AppCompatActivity implements OnMapReadyCallbac
     private TextView txtDescription;
     private TextView txtDate;
     private ContactsAdapter adapter;
+    private LocationData locationData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show);
 
-        listContacts = (LinearLayout) findViewById(R.id.listContacts);
-        fragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
-        scrollView = (ScrollView) findViewById(R.id.activity_show);
-        mapScrollDisableView = findViewById(R.id.imageView);
-        fabEdit = (FloatingActionButton) findViewById(R.id.fabEdit);
-        fabDelete = (FloatingActionButton) findViewById(R.id.fabDelete);
-        txtTitle = (TextView) findViewById(R.id.txtTitle);
-        txtDescription = (TextView) findViewById(R.id.txtDescription);
-        txtDate = (TextView) findViewById(R.id.txtDate);
-        adapter = new ContactsAdapter(this);
+        findViews();
 
         fabEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
         fabDelete.setImageDrawable(getResources().getDrawable(R.drawable.ic_trash));
@@ -60,6 +55,7 @@ public class ShowActivity extends AppCompatActivity implements OnMapReadyCallbac
             ArrayList<Contact> contacts = (ArrayList<Contact>) savedInstanceState.getSerializable("contacts");
             if (contacts != null)
                 adapter.addAll(contacts);
+            locationData = (LocationData) savedInstanceState.getSerializable("locationData");
         } else if (getIntent() != null) {
             Intent intent = getIntent();
             Reminder reminder = (Reminder) intent.getSerializableExtra("reminder");
@@ -70,6 +66,7 @@ public class ShowActivity extends AppCompatActivity implements OnMapReadyCallbac
             ArrayList<Contact> contacts = reminder.getContacts();
             if (contacts != null)
                 adapter.addAll(contacts);
+            locationData = reminder.getLocationData();
         }
 
         fragment.getMapAsync(this);
@@ -86,6 +83,19 @@ public class ShowActivity extends AppCompatActivity implements OnMapReadyCallbac
         fillContactList();
 
         setupFabClickListeners();
+    }
+
+    private void findViews() {
+        listContacts = (LinearLayout) findViewById(R.id.listContacts);
+        fragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+        scrollView = (ScrollView) findViewById(R.id.activity_show);
+        mapScrollDisableView = findViewById(R.id.imageView);
+        fabEdit = (FloatingActionButton) findViewById(R.id.fabEdit);
+        fabDelete = (FloatingActionButton) findViewById(R.id.fabDelete);
+        txtTitle = (TextView) findViewById(R.id.txtTitle);
+        txtDescription = (TextView) findViewById(R.id.txtDescription);
+        txtDate = (TextView) findViewById(R.id.txtDate);
+        adapter = new ContactsAdapter(this);
     }
 
     private void setupFabClickListeners() {
@@ -124,19 +134,32 @@ public class ShowActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putString("title", "Titel");
-        outState.putString("description", "forklaring");
-        outState.putString("date", "01-02-2003");
-        ArrayList<Contact> contacts = new ArrayList<>();
-        contacts.add(new Contact("Andreas", "12345678"));
+        outState.putString("title", txtTitle.getText().toString());
+        outState.putString("description", txtDescription.getText().toString());
+        outState.putString("date", txtDate.getText().toString());
+        ArrayList<Contact> contacts = getContactsFromAdapter();
         outState.putSerializable("contacts", contacts);
+        outState.putSerializable("locationData", locationData);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Log.d("ShowActivity", "MAP IS GOD DAMN READY! :D");
-        LatLng position = new LatLng(56.184702, 10.116348);
+        long lat = Long.parseLong(locationData.getLat());
+        long lon = Long.parseLong(locationData.getLon());
+        LatLng position = new LatLng(lat, lon);
         googleMap.addMarker(new MarkerOptions().position(position));
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 15));
+    }
+
+    public ArrayList<Contact> getContactsFromAdapter() {
+        ArrayList<Contact> contacts = new ArrayList<>();
+        if (adapter != null && adapter.getCount() > 0) {
+            int count = adapter.getCount();
+            for (int i = 0; i < count; i++) {
+                contacts.add(adapter.getItem(i));
+            }
+        }
+        return contacts;
     }
 }
