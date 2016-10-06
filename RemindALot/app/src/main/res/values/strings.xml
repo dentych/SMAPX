@@ -4,4 +4,10 @@
     <string name="title">Title</string>
     <string name="place">Place</string>
     <string name="time">Time</string>
+    <string name="description">Description</string>
+    <string name="contacts">Contacts</string>
+    <string name="date">Date</string>
+    <string name="placeholderDate">01-01-2016</string>
+    <string name="location">Location</string>
+    <string name="placeholderLocation">Reminder location</string>
 </resources>
