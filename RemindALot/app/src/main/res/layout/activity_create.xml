@@ -68,11 +68,34 @@
         android:drawableLeft="@drawable/geofence"
         android:drawablePadding="5dp"
         android:hint="Location"
+        android:layout_marginTop="12dp"
+        android:id="@+id/placement"
         android:layout_below="@+id/datepicker"
         android:layout_alignLeft="@+id/datepicker"
-        android:layout_alignStart="@+id/datepicker"
-        android:layout_marginTop="12dp"
-        android:id="@+id/placement" />
+        android:layout_alignStart="@+id/datepicker" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/contacts"
+        android:drawablePadding="5dp"
+        android:inputType="textMultiLine"
+        android:ems="10"
+        android:id="@+id/peoplebtn"
+        android:layout_below="@+id/placement"
+        android:layout_alignLeft="@+id/placement"
+        android:layout_alignStart="@+id/placement"
+        android:hint="Add participant"
+        style="@android:style/Widget.AutoCompleteTextView" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:id="@+id/contactList"
+        android:layout_height="120dp"
+        android:layout_below="@+id/peoplebtn"
+        android:layout_alignRight="@+id/peoplebtn"
+        android:layout_alignEnd="@+id/peoplebtn" />
+    <![CDATA[
 
     View
         android:layout_width="match_parent"
@@ -84,4 +107,5 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
+]]>
 </RelativeLayout>

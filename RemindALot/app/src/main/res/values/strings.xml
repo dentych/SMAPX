@@ -10,4 +10,5 @@
     <string name="placeholderDate">01-01-2016</string>
     <string name="location">Location</string>
     <string name="placeholderLocation">Reminder location</string>
+    <string name="hintPhoneNumber">No phone number</string>
 </resources>
