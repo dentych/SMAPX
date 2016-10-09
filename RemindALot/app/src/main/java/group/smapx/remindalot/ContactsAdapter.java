@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ContactsAdapter extends ArrayAdapter<Contact> {
     public ContactsAdapter(Context context) {
         super(context, android.R.layout.simple_list_item_1);

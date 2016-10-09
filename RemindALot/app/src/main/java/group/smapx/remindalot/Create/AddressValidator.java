@@ -9,7 +9,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import java.io.IOException;
 
-import group.smapx.remindalot.Models.LocationData;
+import group.smapx.remindalot.model.LocationData;
 
 /**
  * Created by benla on 10/5/2016.

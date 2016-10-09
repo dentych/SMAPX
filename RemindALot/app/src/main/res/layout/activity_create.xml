@@ -13,22 +13,6 @@
 
     <EditText
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Date"
-        android:singleLine="true"
-        android:drawableLeft="@drawable/calender"
-        android:drawablePadding="5dp"
-        android:focusable="false"
-        android:contentDescription="The date"
-        android:id="@+id/datepicker"
-        android:layout_width="150dp"
-        android:layout_below="@+id/editText4"
-        android:layout_alignLeft="@+id/editText4"
-        android:layout_alignStart="@+id/editText4"
-        android:layout_marginTop="20dp" />
-
-    <EditText
-        android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
         android:hint="Time"
@@ -42,23 +26,27 @@
         android:layout_toRightOf="@+id/datepicker"
         android:layout_toEndOf="@+id/datepicker" />
 
-    <EditText
+
+    <ListView
+        android:layout_width="match_parent"
+        android:id="@+id/contactList"
+        android:layout_height="120dp"
+        android:layout_below="@+id/peopleBtn"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="34dp" />
+
+    <Button
+        android:text="Add participant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:layout_marginLeft="22dp"
-        android:layout_marginStart="22dp"
-        android:layout_marginTop="30dp"
-        android:id="@+id/editText4"
-        android:drawableLeft="@drawable/moon"
+        android:drawableLeft="@drawable/contacts"
         android:drawablePadding="5dp"
-        android:hint="Title"
-        android:singleLine="true"
-        android:contentDescription="TItle of the reminder"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:id="@+id/peopleBtn"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_centerVertical="true"
+        android:layout_alignLeft="@+id/placement"
+        android:layout_alignStart="@+id/placement" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -68,34 +56,79 @@
         android:drawableLeft="@drawable/geofence"
         android:drawablePadding="5dp"
         android:hint="Location"
-        android:layout_marginTop="12dp"
         android:id="@+id/placement"
-        android:layout_below="@+id/datepicker"
+        android:layout_above="@+id/peopleBtn"
+        android:layout_alignLeft="@+id/datepicker"
+        android:layout_alignStart="@+id/datepicker" />
+
+    <EditText
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Date"
+        android:singleLine="true"
+        android:drawableLeft="@drawable/calender"
+        android:drawablePadding="5dp"
+        android:focusable="false"
+        android:contentDescription="The date"
+        android:id="@+id/datepicker"
+        android:layout_width="150dp"
+        android:layout_above="@+id/placement"
+        android:layout_alignLeft="@+id/titleText"
+        android:layout_alignStart="@+id/titleText" />
+
+    <Button
+        android:text="Add description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/newdesc"
+        android:drawablePadding="5dp"
+        android:id="@+id/descButton"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_above="@+id/timepicker"
         android:layout_alignLeft="@+id/datepicker"
         android:layout_alignStart="@+id/datepicker" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/contacts"
-        android:drawablePadding="5dp"
-        android:inputType="textMultiLine"
+        android:inputType="textPersonName"
         android:ems="10"
-        android:id="@+id/peoplebtn"
-        android:layout_below="@+id/placement"
-        android:layout_alignLeft="@+id/placement"
-        android:layout_alignStart="@+id/placement"
-        android:hint="Add participant"
-        style="@android:style/Widget.AutoCompleteTextView" />
+        android:layout_marginLeft="13dp"
+        android:layout_marginStart="13dp"
+        android:id="@+id/titleText"
+        android:drawableLeft="@drawable/moon"
+        android:drawablePadding="5dp"
+        android:hint="Title"
+        android:singleLine="true"
+        android:contentDescription="TItle of the reminder"
+        android:layout_above="@+id/descButton"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
-    <ListView
-        android:layout_width="match_parent"
-        android:id="@+id/contactList"
-        android:layout_height="120dp"
-        android:layout_below="@+id/peoplebtn"
-        android:layout_alignRight="@+id/peoplebtn"
-        android:layout_alignEnd="@+id/peoplebtn" />
+    <Button
+        android:text="OK"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@+id/peopleBtn"
+        android:layout_alignStart="@+id/peopleBtn"
+        android:id="@+id/OKBtn"
+        style="@style/Widget.AppCompat.Button.Colored" />
+
+    <Button
+        android:text="Cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/OKBtn"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="12dp"
+        android:layout_marginEnd="12dp"
+        android:id="@+id/cancelBtn"
+        style="@style/Widget.AppCompat.Button.Small" />
     <![CDATA[
+
+
 
     View
         android:layout_width="match_parent"
@@ -106,6 +139,7 @@
         android:layout_below="@+id/datepicker"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
 
 ]]>
 </RelativeLayout>

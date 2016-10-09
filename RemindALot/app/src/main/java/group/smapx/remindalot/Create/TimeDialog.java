@@ -19,13 +19,13 @@ import java.util.TimeZone;
 
 public class TimeDialog implements View.OnClickListener, TimePickerDialog.OnTimeSetListener{
     private Context context;
-    private EditText timeText;
+    private DateTimeReceiver receiver;
     private int hour;
     private int minute;
 
-    public TimeDialog(Context context, EditText timeText){
+    public TimeDialog(Context context, DateTimeReceiver receiver){
         this.context = context;
-        this.timeText = timeText;
+        this.receiver = receiver;
     }
 
 
@@ -40,6 +40,6 @@ public class TimeDialog implements View.OnClickListener, TimePickerDialog.OnTime
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         this.hour = hourOfDay;
         this.minute = minute;
-        timeText.setText(hourOfDay + ":" + minute);
+        receiver.onTimeChosen(hourOfDay,minute);
     }
 }

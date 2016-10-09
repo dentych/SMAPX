@@ -6,7 +6,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import group.smapx.remindalot.CreateActivity;
-import group.smapx.remindalot.Models.LocationData;
+import group.smapx.remindalot.model.LocationData;
 
 /**
  * Created by benla on 10/6/2016.

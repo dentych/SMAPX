@@ -8,6 +8,7 @@ import android.widget.EditText;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -17,24 +18,19 @@ import java.util.TimeZone;
 
 public class DateDialog implements View.OnClickListener, DatePickerDialog.OnDateSetListener{
     private Context context;
-    private EditText dateText;
+    private DateTimeReceiver receiver;
     private int day;
     private int month;
     private int year;
 
-    public DateDialog(Context context, EditText dateText){
+    public DateDialog(Context context, DateTimeReceiver receiver){
+        this.receiver = receiver;
         this.context = context;
-        this.dateText = dateText;
     }
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        Calendar remindCalender = Calendar.getInstance();
-        remindCalender.set(Calendar.YEAR, year);
-        remindCalender.set(Calendar.MONTH, month);
-        remindCalender.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy", Locale.getDefault());
-        dateText.setText(format.format(remindCalender.getTime()));
+        this.receiver.onDateChosen(dayOfMonth,month,year);
     }
 
     @Override
