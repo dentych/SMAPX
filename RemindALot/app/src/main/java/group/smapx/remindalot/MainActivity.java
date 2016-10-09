@@ -19,11 +19,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-
         final BasicReminder b = new BasicReminder(this);
-        AlarmBroadcastReceiver br = new AlarmBroadcastReceiver();
-
 
         FloatingActionButton fab_create = (FloatingActionButton) findViewById(R.id.fab);
 
@@ -34,12 +30,25 @@ public class MainActivity extends AppCompatActivity {
                 Intent createReminder = new Intent();
 //                startActivityForResult(createReminder,1);
 
-                Calendar c = Calendar.getInstance();
-                c.add(Calendar.SECOND, 5);
 
-                b.setAlarm(c.getTimeInMillis());
-                Log.d("Test", String.valueOf(c.getTimeInMillis() + 5000));
 
+//                //Broadcasting test! Left for clarification until monday
+//                String title1 = "GruppeMøde";
+//                String desc1 = "med drengene på mandag";
+//
+//                String title2 = "aksdmakmsd";
+//                String desc2 = "aksdoasdpi";
+//
+//                Calendar c = Calendar.getInstance();
+//                c.add(Calendar.SECOND, 5);
+//
+//                b.setAlarm(title1, desc1, c.getTimeInMillis(), 0);
+//                Log.d("Test", String.valueOf(c.getTimeInMillis() + 5000));
+//
+//                c.add(Calendar.SECOND, 10);
+//
+//                b.setAlarm(title2, desc2, c.getTimeInMillis(), 1);
+//                Log.d("Test", String.valueOf(c.getTimeInMillis() + 10000));
             }
         });
     }

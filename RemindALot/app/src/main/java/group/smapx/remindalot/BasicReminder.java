@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
 
 public class BasicReminder {
@@ -17,17 +18,23 @@ public class BasicReminder {
         am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     }
 
-    public void setAlarm(long time) {
+    public void setAlarm(String title, String description, long time, int requestCode) {
+
+        Bundle reminderInfo = new Bundle();
+        reminderInfo.putString("title", title);
+        reminderInfo.putString("description", description);
 
         Intent setAlarm = new Intent(context, AlarmBroadcastReceiver.class);
-        PendingIntent pi = PendingIntent.getBroadcast(context,0, setAlarm, 0);
+        setAlarm.putExtra("reminderInfo", reminderInfo);
+
+        PendingIntent pi = PendingIntent.getBroadcast(context, requestCode, setAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
 
         if (Build.VERSION.SDK_INT >= 19) {
             am.setExact(AlarmManager.RTC_WAKEUP, time, pi);
         } else {
             am.set(AlarmManager.RTC_WAKEUP, time, pi);
-
         }
+
         Log.d("BasicReminder", "Setting Alarm");
     }
 }

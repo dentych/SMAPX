@@ -5,9 +5,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.Ringtone;
+import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.WindowManager;
@@ -15,71 +16,81 @@ import android.widget.Toast;
 
 public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
-    Ringtone r;
+    MediaPlayer mp;
+    Boolean AlarmSounding = false;
+    Vibrator vib;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         Toast.makeText(context, "Yay, got it!", Toast.LENGTH_SHORT).show();
 
-        Vibrator vib = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        vib.vibrate(2000);
+        AlarmSounding = true;
+        vib = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
 
-        Log.d("Test", "Vibrate'n'shite");
-        Log.d("Test", String.valueOf(context.getApplicationContext()));
+        final Thread vibrateThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    do {
+                        vib.vibrate(1000);
+                        Thread.sleep(2000);
+
+                    } while(AlarmSounding);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        vibrateThread.start();
+        Log.d("AlarmBroadcastReceiver", "Vibrate On!");
+
+        Bundle reminderInfo = intent.getBundleExtra("reminderInfo");
+        String title = reminderInfo.getString("title");
+        String description = reminderInfo.getString("description");
 
         try {
             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-            r = RingtoneManager.getRingtone(context, notification);
-            r.play();
+            mp = MediaPlayer.create(context, notification);
+            mp.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-
-
-        AlertDialog.Builder ab = new AlertDialog.Builder(context)
-                .setTitle("Wow")
-                .setMessage("Alarm god damnit")
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(description)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // continue do stuff
-                        Log.d("Test", "Yes");
-                        r.stop();
-
+                        Log.d("AlarmBroadcastReceiver", "Ok");
+                        mp.stop();
+                        AlarmSounding = false;
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //do nothing
-                        Log.d("Test", "No");
-                        r.stop();
+                        Log.d("AlarmBroadcastReceiver", "Cancel");
+                        mp.stop();
+                        AlarmSounding = false;
                     }
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert);
 
-
-        AlertDialog ad = ab.create();
+        AlertDialog alertDialog = alertDialogBuilder.create();
 
         //Allows the alarm to be shown on locked screen
         //***Heavily influenced by this: http://stackoverflow.com/questions/3629179/android-activity-over-default-lock-screen
-        ad.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON|
+        alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON|
                 WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD|
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED|
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         //***
-        ad.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ERROR);
+        alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ERROR);
 
-
-
-
-
-
-        ad.show();
-
-
-
+        alertDialog.show();
     }
 }
 
