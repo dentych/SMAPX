@@ -19,13 +19,11 @@ public class PermissionManager extends AppCompatActivity {
     private PermissionCallback callback;
 
 
-    public boolean checkPermission(Activity activity, String permission){
+    public boolean checkPermission(Activity activity, String permission) {
         int permissionCheck = ContextCompat.checkSelfPermission(activity,
                 permission);
 
-        if(permissionCheck == PackageManager.PERMISSION_GRANTED)
-            return true;
-        return false;
+        return permissionCheck == PackageManager.PERMISSION_GRANTED;
     }
 
 
@@ -37,9 +35,9 @@ public class PermissionManager extends AppCompatActivity {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                        callback.onPermissionGranted();
+                    this.callback.onPermissionGranted();
                 } else {
-                    callback.onPermissionDenied();
+                    this.callback.onPermissionDenied();
                 }
             }
 
@@ -48,16 +46,17 @@ public class PermissionManager extends AppCompatActivity {
         }
     }
 
-    private int getPermissionCode(String permission){
-        switch(permission){
+    private int getPermissionCode(String permission) {
+        switch (permission) {
             case Manifest.permission.READ_CONTACTS:
                 return 1;
-            default: return 0;
+            default:
+                return 0;
 
         }
     }
 
-    public void getPermission(Activity activity, String permission, PermissionCallback callback){
+    public void getPermission(Activity activity, String permission, PermissionCallback callback) {
         this.callback = callback;
         if (ContextCompat.checkSelfPermission(activity,
                 permission)

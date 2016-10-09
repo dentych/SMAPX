@@ -1,4 +1,4 @@
-package group.smapx.remindalot.Create;
+package group.smapx.remindalot.Create.ReciverInterfaces;
 
 /**
  * Created by benla on 10/6/2016.
@@ -7,4 +7,5 @@ package group.smapx.remindalot.Create;
 public interface DescriptionReceiver {
 
     public void onDescriptionEntered(String descr);
+    public String getInitialDescription();
 }

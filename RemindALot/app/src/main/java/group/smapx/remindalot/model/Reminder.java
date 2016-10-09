@@ -14,6 +14,9 @@ public class Reminder implements Serializable {
     private ArrayList<Contact> contacts;
     private LocationData locationData;
 
+    public Reminder(){
+
+    }
     public Reminder(String title, String description, long date, ArrayList<Contact> contacts) {
         this.title = title;
         this.description = description;

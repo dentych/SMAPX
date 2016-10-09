@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -25,11 +24,11 @@ public class HTTPRequestExecutor {
         if (!isOnline())
             throw new IOException("Not online");
 
-        url = new URL(req);
-        connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
+        this.url = new URL(req);
+        this.connection = (HttpURLConnection) this.url.openConnection();
+        this.connection.setRequestMethod("GET");
 
-        InputStream inputStream = connection.getInputStream();
+        InputStream inputStream = this.connection.getInputStream();
         InputStreamReader reader = new InputStreamReader(inputStream);
 
         BufferedReader bufferedReader = new BufferedReader(reader);

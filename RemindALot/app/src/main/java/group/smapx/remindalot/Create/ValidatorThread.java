@@ -2,10 +2,9 @@ package group.smapx.remindalot.Create;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.EditText;
 import android.widget.Toast;
 
-import group.smapx.remindalot.CreateActivity;
+import group.smapx.remindalot.Create.ReciverInterfaces.LocationDataReceiver;
 import group.smapx.remindalot.model.LocationData;
 
 /**
@@ -14,38 +13,38 @@ import group.smapx.remindalot.model.LocationData;
 
 public class ValidatorThread extends AsyncTask<String, Integer, LocationData> {
 
-    private Context context;
-    private EditText edittext;
+    boolean err;
+    private final Context context;
+    private final LocationDataReceiver receiver;
     private LocationData locationData;
 
-    public ValidatorThread(EditText txt, Context contex, LocationData data){
-        this.context = contex;
-        this.edittext = txt;
-        this.locationData = data;
+    public ValidatorThread(Context contex, LocationDataReceiver receiver) {
+        context = contex;
+        this.receiver = receiver;
     }
 
-    boolean err = false;
+    @Override
     protected LocationData doInBackground(String... locaton) {
 
         AddressValidator validator = new AddressValidator();
         try {
-            if(validator.validate(locaton[0])){
-                locationData = validator.getLocationData();
+            if (validator.validate(locaton[0])) {
+                this.locationData = validator.getLocationData();
             }
         } catch (Exception e) {
-            err = true;
+            this.err = true;
             return null;
-        };
-        return locationData;
+        }
+        return this.locationData;
     }
 
+    @Override
     protected void onPostExecute(LocationData result) {
-        if(err){
-            Toast.makeText(context, "Could not get data from google - are you online?",Toast.LENGTH_LONG).show();
-            locationData = null;
-        }
-        else{
-            this.edittext.setText(result.getFormattedAddress());
+        if (this.err) {
+            Toast.makeText(this.context, "Could not get data from google - are you online?", Toast.LENGTH_LONG).show();
+            this.locationData = null;
+        } else {
+            this.receiver.onLocationDataReady(result);
         }
     }
 }
