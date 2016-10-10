@@ -71,28 +71,35 @@ public class DatabaseDAO {
 
         String sortOrder = ReminderContract.FeedEntry.COLUMN_DATE;
 
-        Cursor c = db.query(
-                ReminderContract.FeedEntry.TABLE_NAME,
-                ReminderContract.PROJECTION,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                sortOrder
-        );
-
+        Cursor c = null;
         Reminder reminder = null;
-        if (c.moveToFirst()) {
-            reminder = new Reminder();
+        try {
+            c = db.query(
+                    ReminderContract.FeedEntry.TABLE_NAME,
+                    ReminderContract.PROJECTION,
+                    selection,
+                    selectionArgs,
+                    null,
+                    null,
+                    sortOrder
+            );
 
-            reminder.setTitle(c.getString(1));
-            reminder.setDescription(c.getString(2));
-            reminder.setDate(c.getLong(3));
-            LocationData l = new LocationData(c.getString(5), c.getString(6), c.getString(4));
-            reminder.setLocationData(l);
+            if (c.moveToFirst()) {
+                reminder = new Reminder();
 
-            ArrayList<Contact> contacts = getContactsForReminder(reminderId);
-            reminder.setContacts(contacts);
+                reminder.setTitle(c.getString(1));
+                reminder.setDescription(c.getString(2));
+                reminder.setDate(c.getLong(3));
+                LocationData l = new LocationData(c.getString(5), c.getString(6), c.getString(4));
+                reminder.setLocationData(l);
+
+                ArrayList<Contact> contacts = getContactsForReminder(reminderId);
+                reminder.setContacts(contacts);
+            }
+        } finally {
+            if (c != null) {
+                c.close();
+            }
         }
 
         return reminder;
