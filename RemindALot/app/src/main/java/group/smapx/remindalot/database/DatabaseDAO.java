@@ -35,6 +35,9 @@ public class DatabaseDAO {
 
         long reminderId = db.insert(ReminderContract.FeedEntry.TABLE_NAME,
                 null, cv);
+        reminder.setId(reminderId);
+
+        Log.d(LOG_TAG, "Inserted reminder with ID " + reminderId);
 
         for (Contact contact : reminder.getContacts()) {
             cv = new ContentValues();
@@ -87,6 +90,7 @@ public class DatabaseDAO {
             if (c.moveToFirst()) {
                 reminder = new Reminder();
 
+                reminder.setId(c.getLong(0));
                 reminder.setTitle(c.getString(1));
                 reminder.setDescription(c.getString(2));
                 reminder.setDate(c.getLong(3));
@@ -124,6 +128,7 @@ public class DatabaseDAO {
                 do {
                     long id = c.getLong(0);
                     Reminder reminder = new Reminder();
+                    reminder.setId(c.getLong(0));
                     reminder.setTitle(c.getString(1));
                     reminder.setDescription(c.getString(2));
                     reminder.setDate(c.getLong(3));
@@ -131,6 +136,7 @@ public class DatabaseDAO {
                     reminder.setLocationData(l);
                     ArrayList<Contact> contacts = getContactsForReminder(id);
                     reminder.setContacts(contacts);
+                    reminders.add(reminder);
                 } while (c.moveToNext());
             }
         } finally {

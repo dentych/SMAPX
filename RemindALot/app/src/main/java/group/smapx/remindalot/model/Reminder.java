@@ -15,12 +15,11 @@ public class Reminder implements Serializable {
     public Reminder() {
     }
 
-    public Reminder(String title, String description, long date, ArrayList<Contact> contacts, int requestCode) {
+    public Reminder(String title, String description, long date, ArrayList<Contact> contacts) {
         this.title = title;
         this.description = description;
         this.date = date;
         this.contacts = contacts;
-        this.requestCode = requestCode;
     }
 
     public long getId() {

@@ -14,6 +14,7 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import group.smapx.remindalot.Create.ClickListeners.DateDialog;
@@ -32,7 +33,7 @@ import group.smapx.remindalot.model.LocationData;
 import group.smapx.remindalot.model.Reminder;
 
 public class CreateActivity extends AppCompatActivity implements PermissionCallback, ContactReceiver, DescriptionReceiver, DateTimeReceiver, LocationDataReceiver {
-
+    public static final int RESULT_CREATE = 100;
     EditText dateText, titleText, timeText, locationText;
     DateDialog dateDialog;
     TimeDialog timeDialog;
@@ -47,28 +48,6 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
     PeopleButtonListener peoplebuttonListener;
     private int hour, minute, day, month, year = 0;
 
-    public CreateActivity(Reminder reminder) {
-        getPermissions();
-        this.reminder = reminder;
-        if (reminder != null) {
-            titleText.setText(reminder.getTitle());
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(reminder.getDate());
-            setDateText(calendar);
-            setTimeText(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
-            for (Contact contact : reminder.getContacts()) {
-                adapter.add(contact);
-            }
-            locationText.setText(reminder.getLocationData().getFormattedAddress());
-
-        } else this.reminder = new Reminder();
-    }
-
-    public CreateActivity() {
-        reminder = new Reminder();
-
-    }
-
     private void initLocationListener() {
         locationText = (EditText) findViewById(R.id.placement);
 
@@ -82,7 +61,7 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
         });
     }
 
-    private void validateAddress(){
+    private void validateAddress() {
         ValidatorThread thread = new ValidatorThread(CreateActivity.this, CreateActivity.this);
         thread.execute(locationText.getText().toString());
     }
@@ -123,11 +102,29 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
             }
         });
 
+        if (getIntent() != null && getIntent().hasExtra("reminder")) {
+            reminder = (Reminder) getIntent().getSerializableExtra("reminder");
+            if (reminder != null) {
+                titleText.setText(reminder.getTitle());
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(reminder.getDate());
+                setDateText(calendar);
+                setTimeText(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+                for (Contact contact : reminder.getContacts()) {
+                    adapter.add(contact);
+                }
+                locationText.setText(reminder.getLocationData().getFormattedAddress());
+
+            } else this.reminder = new Reminder();
+        } else {
+            reminder = new Reminder();
+        }
+
         initButtons();
     }
 
-    private void initSearchbtn(){
-        Button searchBtn = (Button)findViewById(R.id.searchBtn);
+    private void initSearchbtn() {
+        Button searchBtn = (Button) findViewById(R.id.searchBtn);
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -152,9 +149,10 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
         peoplebuttonListener.onActivityResult(reqCode, resultCode, data);
     }
 
-    private void getPermissions(){
+    private void getPermissions() {
         permissionManager.getPermission(CreateActivity.this, android.Manifest.permission.READ_CONTACTS, this);
     }
+
     private void initPeopleBtn() {
         this.contactButton = (Button) findViewById(R.id.peopleBtn);
         this.contactButton.setOnClickListener(peoplebuttonListener);
@@ -167,7 +165,7 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
         this.okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!addressValidated)
+                if (!addressValidated)
                     validateAddress();
 
                 if (validateInput()) {
@@ -182,7 +180,7 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
 
                     Intent returnIntent = new Intent();
                     returnIntent.putExtra("reminder", reminder);
-                    setResult(MainActivity.CREATE_SUCCESS, returnIntent);
+                    setResult(CreateActivity.RESULT_CREATE, returnIntent);
                     finish();
                 }
             }
@@ -198,34 +196,31 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
         });
     }
 
-    private boolean isNullOrWhiteSpace(String s){
-        if(s == null || s.equals("") || s.isEmpty() || s.trim().isEmpty())
+    private boolean isNullOrWhiteSpace(String s) {
+        if (s == null || s.equals("") || s.isEmpty() || s.trim().isEmpty())
             return true;
         return false;
     }
+
     private boolean validateInput() {
-        if(isNullOrWhiteSpace(titleText.getText().toString())) {
+        if (isNullOrWhiteSpace(titleText.getText().toString())) {
             Toast.makeText(this, "Title can not be empty", Toast.LENGTH_LONG).show();
-            Log.d("Debug","Title");
+            Log.d("Debug", "Title");
             return false;
-        }
-        else if(isNullOrWhiteSpace(locationText.getText().toString())){
-            Toast.makeText(this,"Location can not be empty",Toast.LENGTH_LONG).show();
-            Log.d("Debug","Location");
+        } else if (isNullOrWhiteSpace(locationText.getText().toString())) {
+            Toast.makeText(this, "Location can not be empty", Toast.LENGTH_LONG).show();
+            Log.d("Debug", "Location");
             return false;
-        }
-        else if(reminder.getLocationData() == null){
-            Toast.makeText(this,"There is a problem with the address.",Toast.LENGTH_LONG).show();
+        } else if (reminder.getLocationData() == null) {
+            Toast.makeText(this, "There is a problem with the address.", Toast.LENGTH_LONG).show();
             return false;
-        }
-        else if (getTSE() < Calendar.getInstance().getTimeInMillis()){
-            Toast.makeText(this,"Can not schedule a reminder in to the past. We're not that good.",Toast.LENGTH_LONG).show();
-            Log.d("Debug","Timeinmill");
+        } else if (getTSE() < new Date().getTime()) {
+            Toast.makeText(this, "Can not schedule a reminder in to the past. We're not that good.", Toast.LENGTH_LONG).show();
+            Log.d("Debug", "Timeinmill");
             return false;
-        }
-        else if(getTSE() == 0){
-            Toast.makeText(this,"Please select time and date",Toast.LENGTH_LONG).show();
-            Log.d("Debug","Datetime");
+        } else if (getTSE() == 0) {
+            Toast.makeText(this, "Please select time and date", Toast.LENGTH_LONG).show();
+            Log.d("Debug", "Datetime");
             return false;
         }
         return true;
@@ -236,14 +231,14 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(this.year, this.month, this.day, this.hour, this.minute);
-        if(this.year == 0 || this.month == 0 || this.day == 0)
+        if (this.year == 0 || this.month == 0 || this.day == 0)
             return 0;
         return calendar.getTimeInMillis();
     }
 
     @Override
     public void onPermissionGranted() {
-        Log.d("Debug","Permission granted");
+        Log.d("Debug", "Permission granted");
         isPermissionReadContacts = true;
         initPeopleBtn();
     }
