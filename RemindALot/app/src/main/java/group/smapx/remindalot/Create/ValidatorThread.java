@@ -31,6 +31,7 @@ public class ValidatorThread extends AsyncTask<String, Integer, LocationData> {
             if (validator.validate(locaton[0])) {
                 this.locationData = validator.getLocationData();
             }
+            else this.err = true;
         } catch (Exception e) {
             this.err = true;
             return null;
@@ -41,7 +42,7 @@ public class ValidatorThread extends AsyncTask<String, Integer, LocationData> {
     @Override
     protected void onPostExecute(LocationData result) {
         if (this.err) {
-            Toast.makeText(this.context, "Could not get data from google - are you online?", Toast.LENGTH_LONG).show();
+            Toast.makeText(this.context, "Error in address, verify the address and internet connection.", Toast.LENGTH_LONG).show();
             this.locationData = null;
         } else {
             this.receiver.onLocationDataReady(result);

@@ -20,6 +20,7 @@ import group.smapx.remindalot.model.Reminder;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static int CREATE_SUCCESS = 100;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
