@@ -37,8 +37,8 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
     DateDialog dateDialog;
     TimeDialog timeDialog;
     ContactsAdapter adapter;
+    boolean addressValidated = false;
     LocationData locationData;
-    long TSE;
     Button okBtn, cancelBtn, descrButton, contactButton;
     Reminder reminder;
     boolean isPermissionReadContacts = false;
@@ -48,6 +48,7 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
     private int hour, minute, day, month, year = 0;
 
     public CreateActivity(Reminder reminder) {
+        getPermissions();
         this.reminder = reminder;
         if (reminder != null) {
             titleText.setText(reminder.getTitle());
@@ -75,13 +76,16 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus && !locationText.getText().toString().matches("")) {
-                    ValidatorThread thread = new ValidatorThread(CreateActivity.this, CreateActivity.this);
-                    thread.execute(locationText.getText().toString());
+                    validateAddress();
                 }
             }
         });
     }
 
+    private void validateAddress(){
+        ValidatorThread thread = new ValidatorThread(CreateActivity.this, CreateActivity.this);
+        thread.execute(locationText.getText().toString());
+    }
 
     private void initDateTimeListeners() {
         dateText = (EditText) findViewById(R.id.datepicker);
@@ -98,8 +102,7 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create);
-        permissionManager.getPermission(CreateActivity.this, android.Manifest.permission.READ_CONTACTS, this);
-
+        getPermissions();
         this.peoplebuttonListener = new PeopleButtonListener(this, this);
         this.titleText = (EditText) findViewById(R.id.titleText);
         initDateTimeListeners();
@@ -107,7 +110,7 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
         initContactList();
         initPeopleBtn();
         initDescriptionDialog();
-
+        initSearchbtn();
         adapter = new ContactsAdapter(this);
         contactList.setAdapter(adapter);
 
@@ -121,6 +124,16 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
         });
 
         initButtons();
+    }
+
+    private void initSearchbtn(){
+        Button searchBtn = (Button)findViewById(R.id.searchBtn);
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                validateAddress();
+            }
+        });
     }
 
     private void initDescriptionDialog() {
@@ -139,11 +152,12 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
         peoplebuttonListener.onActivityResult(reqCode, resultCode, data);
     }
 
+    private void getPermissions(){
+        permissionManager.getPermission(CreateActivity.this, android.Manifest.permission.READ_CONTACTS, this);
+    }
     private void initPeopleBtn() {
         this.contactButton = (Button) findViewById(R.id.peopleBtn);
-
-        if (permissionManager.checkPermission(this, android.Manifest.permission.READ_CONTACTS))
-            this.contactButton.setOnClickListener(peoplebuttonListener);
+        this.contactButton.setOnClickListener(peoplebuttonListener);
     }
 
     private void initButtons() {
@@ -153,6 +167,9 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
         this.okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!addressValidated)
+                    validateAddress();
+
                 if (validateInput()) {
                     ArrayList<Contact> contacts = new ArrayList<Contact>();
 
@@ -181,21 +198,54 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
         });
     }
 
+    private boolean isNullOrWhiteSpace(String s){
+        if(s == null || s.equals("") || s.isEmpty() || s.trim().isEmpty())
+            return true;
+        return false;
+    }
     private boolean validateInput() {
+        if(isNullOrWhiteSpace(titleText.getText().toString())) {
+            Toast.makeText(this, "Title can not be empty", Toast.LENGTH_LONG).show();
+            Log.d("Debug","Title");
+            return false;
+        }
+        else if(isNullOrWhiteSpace(locationText.getText().toString())){
+            Toast.makeText(this,"Location can not be empty",Toast.LENGTH_LONG).show();
+            Log.d("Debug","Location");
+            return false;
+        }
+        else if(reminder.getLocationData() == null){
+            Toast.makeText(this,"There is a problem with the address.",Toast.LENGTH_LONG).show();
+            return false;
+        }
+        else if (getTSE() < Calendar.getInstance().getTimeInMillis()){
+            Toast.makeText(this,"Can not schedule a reminder in to the past. We're not that good.",Toast.LENGTH_LONG).show();
+            Log.d("Debug","Timeinmill");
+            return false;
+        }
+        else if(getTSE() == 0){
+            Toast.makeText(this,"Please select time and date",Toast.LENGTH_LONG).show();
+            Log.d("Debug","Datetime");
+            return false;
+        }
         return true;
+
     }
 
     private long getTSE() {
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(this.year, this.month, this.day, this.hour, this.minute);
-
+        if(this.year == 0 || this.month == 0 || this.day == 0)
+            return 0;
         return calendar.getTimeInMillis();
     }
 
     @Override
     public void onPermissionGranted() {
+        Log.d("Debug","Permission granted");
         isPermissionReadContacts = true;
+        initPeopleBtn();
     }
 
     @Override

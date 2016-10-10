@@ -1,5 +1,7 @@
 package group.smapx.remindalot.Create;
 
+import android.util.Log;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -39,10 +41,11 @@ public class AddressValidator {
         JSONObject responseObject = (JSONObject) obj;
 
 
-        JSONArray jsonObject1 = (JSONArray) responseObject.get("results");
-        if (jsonObject1.size() == 0)
+        JSONArray resultsArray = (JSONArray) responseObject.get("results");
+        Log.d("Debug","Size: " + resultsArray.size());
+        if (resultsArray.size() == 0)
             return false;
-        JSONObject jsonObject2 = (JSONObject) jsonObject1.get(0);
+        JSONObject jsonObject2 = (JSONObject) resultsArray.get(0);
         JSONObject jsonObject3 = (JSONObject) jsonObject2.get("geometry");
 
         JSONObject location = (JSONObject) jsonObject3.get("location");
