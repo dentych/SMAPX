@@ -13,6 +13,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.Date;
 
+
 import group.smapx.remindalot.model.Contact;
 import group.smapx.remindalot.model.LocationData;
 import group.smapx.remindalot.model.Reminder;
@@ -36,25 +37,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //Open creation activity here!
                 Intent createReminder = new Intent();
-//                startActivityForResult(createReminder,1);
+//              startActivityForResult(createReminder,1);
 
-//                //Broadcasting test! Left for clarification until monday
-//                String title1 = "GruppeMøde";
-//                String desc1 = "med drengene på mandag";
-//
-//                String title2 = "aksdmakmsd";
-//                String desc2 = "aksdoasdpi";
-//
-//                Calendar c = Calendar.getInstance();
-//                c.add(Calendar.SECOND, 5);
-//
-//                b.setAlarm(title1, desc1, c.getTimeInMillis(), 0);
-//                Log.d("Test", String.valueOf(c.getTimeInMillis() + 5000));
-//
-//                c.add(Calendar.SECOND, 10);
-//
-//                b.setAlarm(title2, desc2, c.getTimeInMillis(), 1);
-//                Log.d("Test", String.valueOf(c.getTimeInMillis() + 10000));
             }
         });
 
@@ -63,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         contacts.add(new Contact("Annedreas", "25010203"));
         contacts.add(new Contact("Abekat", "12312302"));
 
-        Reminder reminder = new Reminder("Titel", "Forklaring", new Date().getTime(), contacts);
+        Reminder reminder = new Reminder("Titel", "Forklaring", new Date().getTime(), contacts, 1);
         adapter.add(reminder);
         reminder.setLocationData(new LocationData("50", "10", "Some address in tyskland"));
         listReminder.setAdapter(adapter);

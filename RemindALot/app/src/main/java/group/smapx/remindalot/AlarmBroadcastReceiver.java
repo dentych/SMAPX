@@ -24,6 +24,10 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Toast.makeText(context, "Yay, got it!", Toast.LENGTH_SHORT).show();
 
+        Bundle reminderInfo = intent.getBundleExtra("reminderInfo");
+        String title = reminderInfo.getString("title");
+        String description = reminderInfo.getString("description");
+
         AlarmSounding = true;
         vib = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
 
@@ -35,7 +39,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
                         vib.vibrate(1000);
                         Thread.sleep(2000);
 
-                    } while(AlarmSounding);
+                    } while (AlarmSounding);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -43,10 +47,6 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
         });
         vibrateThread.start();
         Log.d("AlarmBroadcastReceiver", "Vibrate On!");
-
-        Bundle reminderInfo = intent.getBundleExtra("reminderInfo");
-        String title = reminderInfo.getString("title");
-        String description = reminderInfo.getString("description");
 
         try {
             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
@@ -59,37 +59,27 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context)
                 .setTitle(title)
                 .setMessage(description)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                .setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // continue do stuff
                         Log.d("AlarmBroadcastReceiver", "Ok");
                         mp.stop();
                         AlarmSounding = false;
                     }
                 })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //do nothing
-                        Log.d("AlarmBroadcastReceiver", "Cancel");
-                        mp.stop();
-                        AlarmSounding = false;
-                    }
-                })
-                .setIcon(android.R.drawable.ic_dialog_alert);
+                .setIcon(android.R.drawable.ic_dialog_info);
 
         AlertDialog alertDialog = alertDialogBuilder.create();
 
         //Allows the alarm to be shown on locked screen
         //***Heavily influenced by this: http://stackoverflow.com/questions/3629179/android-activity-over-default-lock-screen
-        alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON|
-                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD|
-                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED|
+        alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         //***
-        alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ERROR);
 
+        alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
         alertDialog.show();
     }
 }

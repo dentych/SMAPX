@@ -7,10 +7,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
-/**
- * Created by benla on 10/6/2016.
- */
-
 public class PermissionManager extends AppCompatActivity {
 
 
@@ -50,6 +46,8 @@ public class PermissionManager extends AppCompatActivity {
         switch (permission) {
             case Manifest.permission.READ_CONTACTS:
                 return 1;
+            case Manifest.permission.SYSTEM_ALERT_WINDOW:
+                return 2;
             default:
                 return 0;
 

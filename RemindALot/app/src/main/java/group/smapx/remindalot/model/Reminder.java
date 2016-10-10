@@ -10,15 +10,17 @@ public class Reminder implements Serializable {
     private long date;
     private ArrayList<Contact> contacts;
     private LocationData locationData;
+    private int requestCode;
 
     public Reminder() {
     }
 
-    public Reminder(String title, String description, long date, ArrayList<Contact> contacts) {
+    public Reminder(String title, String description, long date, ArrayList<Contact> contacts, int requestCode) {
         this.title = title;
         this.description = description;
         this.date = date;
         this.contacts = contacts;
+        this.requestCode = requestCode;
     }
 
     public long getId() {
@@ -59,6 +61,14 @@ public class Reminder implements Serializable {
 
     public void setContacts(ArrayList<Contact> contacts) {
         this.contacts = contacts;
+    }
+
+    public void setRequestCode(int requestCode) {
+        this.requestCode = requestCode;
+    }
+
+    public int getRequestCode() {
+        return requestCode;
     }
 
     public LocationData getLocationData() {

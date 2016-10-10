@@ -27,6 +27,7 @@ import group.smapx.remindalot.Create.ClickListeners.TimeDialog;
 import group.smapx.remindalot.Create.ValidatorThread;
 import group.smapx.remindalot.Permitter.PermissionCallback;
 import group.smapx.remindalot.Permitter.PermissionManager;
+import group.smapx.remindalot.model.Contact;
 import group.smapx.remindalot.model.LocationData;
 import group.smapx.remindalot.model.Reminder;
 
