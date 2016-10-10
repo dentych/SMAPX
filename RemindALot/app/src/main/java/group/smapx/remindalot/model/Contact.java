@@ -1,4 +1,4 @@
-package group.smapx.remindalot;
+package group.smapx.remindalot.model;
 
 import java.io.Serializable;
 

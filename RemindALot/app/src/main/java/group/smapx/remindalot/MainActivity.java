@@ -1,6 +1,5 @@
 package group.smapx.remindalot;
 
-import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,12 +13,12 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.Date;
 
-import group.smapx.remindalot.Permitter.PermissionCallback;
-import group.smapx.remindalot.Permitter.PermissionManager;
+
+import group.smapx.remindalot.model.Contact;
 import group.smapx.remindalot.model.LocationData;
 import group.smapx.remindalot.model.Reminder;
 
-public class MainActivity extends AppCompatActivity implements PermissionCallback {
+public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +31,6 @@ public class MainActivity extends AppCompatActivity implements PermissionCallbac
         final BasicReminder b = new BasicReminder(this);
 
         FloatingActionButton fab_create = (FloatingActionButton) findViewById(R.id.fab);
-
-        PermissionManager permissionManager = new PermissionManager();
-
-        permissionManager.getPermission(this, Manifest.permission.SYSTEM_ALERT_WINDOW, this);
-
 
         fab_create.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,15 +62,5 @@ public class MainActivity extends AppCompatActivity implements PermissionCallbac
                 startActivity(intent);
             }
         });
-    }
-
-    @Override
-    public void onPermissionGranted() {
-
-    }
-
-    @Override
-    public void onPermissionDenied() {
-
     }
 }
