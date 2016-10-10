@@ -59,25 +59,15 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context)
                 .setTitle(title)
                 .setMessage(description)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                .setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // continue do stuff
                         Log.d("AlarmBroadcastReceiver", "Ok");
                         mp.stop();
                         AlarmSounding = false;
                     }
                 })
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //do nothing
-                        Log.d("AlarmBroadcastReceiver", "Cancel");
-                        mp.stop();
-                        AlarmSounding = false;
-                    }
-                })
-                .setIcon(android.R.drawable.ic_dialog_alert);
+                .setIcon(android.R.drawable.ic_dialog_info);
 
         AlertDialog alertDialog = alertDialogBuilder.create();
 
@@ -88,8 +78,8 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED|
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         //***
-        alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ERROR);
 
+        alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
         alertDialog.show();
     }
 }
