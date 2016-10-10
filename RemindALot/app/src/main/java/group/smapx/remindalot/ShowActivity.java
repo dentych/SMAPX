@@ -22,6 +22,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.Date;
 
+import group.smapx.remindalot.model.Contact;
 import group.smapx.remindalot.model.LocationData;
 import group.smapx.remindalot.model.Reminder;
 

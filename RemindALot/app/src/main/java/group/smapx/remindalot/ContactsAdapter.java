@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import group.smapx.remindalot.model.Contact;
+
 public class ContactsAdapter extends ArrayAdapter<Contact> {
     public ContactsAdapter(Context context) {
         super(context, android.R.layout.simple_list_item_1);

@@ -108,5 +108,6 @@
             android:layout_height="200dp"
             android:layout_alignTop="@+id/map"
             android:src="@android:color/transparent" />
+
     </RelativeLayout>
 </ScrollView>
