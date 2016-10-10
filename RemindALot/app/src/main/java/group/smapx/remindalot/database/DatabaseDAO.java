@@ -13,10 +13,6 @@ import group.smapx.remindalot.model.Contact;
 import group.smapx.remindalot.model.LocationData;
 import group.smapx.remindalot.model.Reminder;
 
-/**
- * Created by dennis on 10/10/16.
- */
-
 public class DatabaseDAO {
     private static final String LOG_TAG = "DatabaseDAO";
     private DatabaseHelper databaseHelper;
