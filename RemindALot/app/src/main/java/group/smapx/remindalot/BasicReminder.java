@@ -23,13 +23,14 @@ public class BasicReminder {
     public void setAlarm(Reminder reminder) {
 
         Bundle reminderInfo = new Bundle();
+        reminderInfo.putString("intentType", "Create");
         reminderInfo.putString("title", reminder.getTitle());
         reminderInfo.putString("description", reminder.getDescription());
 
         Intent setAlarm = new Intent(context, AlarmBroadcastReceiver.class);
         setAlarm.putExtra("reminderInfo", reminderInfo);
 
-        PendingIntent pendingAlarm = PendingIntent.getBroadcast(context, reminder.getId(), setAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingAlarm = PendingIntent.getBroadcast(context, reminder.getRequestCode(), setAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
 
         if (Build.VERSION.SDK_INT >= 19) {
             am.setExact(AlarmManager.RTC_WAKEUP, reminder.getDate(), pendingAlarm);
@@ -38,10 +39,15 @@ public class BasicReminder {
         }
 
         Log.d("BasicReminder", "Setting Alarm");
+        Log.d("BasicReminder", String.valueOf(reminder.getDate()));
+
     }
 
     public void deleteAlarm(Reminder reminder) {
+        Intent deleteAlarm = new Intent(context, AlarmBroadcastReceiver.class);
+        PendingIntent pendingAlarm = PendingIntent.getBroadcast(context, reminder.getRequestCode(), deleteAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        am.cancel(pendingAlarm);
     }
 
 }

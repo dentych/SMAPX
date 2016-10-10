@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         contacts.add(new Contact("Annedreas", "25010203"));
         contacts.add(new Contact("Abekat", "12312302"));
 
-        Reminder reminder = new Reminder("Titel", "Forklaring", new Date().getTime(), contacts);
+        Reminder reminder = new Reminder("Titel", "Forklaring", new Date().getTime(), contacts, 1);
         adapter.add(reminder);
         reminder.setLocationData(new LocationData("50", "10", "Some address in tyskland"));
         listReminder.setAdapter(adapter);
