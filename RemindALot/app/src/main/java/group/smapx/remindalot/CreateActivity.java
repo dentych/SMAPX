@@ -16,14 +16,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-import group.smapx.remindalot.Create.ReciverInterfaces.ContactReceiver;
 import group.smapx.remindalot.Create.ClickListeners.DateDialog;
-import group.smapx.remindalot.Create.ReciverInterfaces.DateTimeReceiver;
 import group.smapx.remindalot.Create.ClickListeners.DescriptionBtnListner;
-import group.smapx.remindalot.Create.ReciverInterfaces.DescriptionReceiver;
-import group.smapx.remindalot.Create.ReciverInterfaces.LocationDataReceiver;
 import group.smapx.remindalot.Create.ClickListeners.PeopleButtonListener;
 import group.smapx.remindalot.Create.ClickListeners.TimeDialog;
+import group.smapx.remindalot.Create.ReciverInterfaces.ContactReceiver;
+import group.smapx.remindalot.Create.ReciverInterfaces.DateTimeReceiver;
+import group.smapx.remindalot.Create.ReciverInterfaces.DescriptionReceiver;
+import group.smapx.remindalot.Create.ReciverInterfaces.LocationDataReceiver;
 import group.smapx.remindalot.Create.ValidatorThread;
 import group.smapx.remindalot.Permitter.PermissionCallback;
 import group.smapx.remindalot.Permitter.PermissionManager;
@@ -119,6 +119,8 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
                 return true;
             }
         });
+
+        initButtons();
     }
 
     private void initDescriptionDialog() {
@@ -157,13 +159,14 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
                     for (int i = 0; i < adapter.getCount(); i++) {
                         contacts.add(adapter.getItem(i));
                     }
+                    reminder.setTitle(titleText.getText().toString());
                     reminder.setDate(getTSE());
+                    reminder.setContacts(contacts);
 
                     Intent returnIntent = new Intent();
                     returnIntent.putExtra("reminder", reminder);
-                    setResult(RESULT_OK, returnIntent);
+                    setResult(MainActivity.CREATE_SUCCESS, returnIntent);
                     finish();
-
                 }
             }
         });
