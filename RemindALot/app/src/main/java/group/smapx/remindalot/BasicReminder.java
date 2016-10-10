@@ -23,7 +23,6 @@ public class BasicReminder {
     public void setAlarm(Reminder reminder) {
 
         Bundle reminderInfo = new Bundle();
-        reminderInfo.putString("intentType", "Create");
         reminderInfo.putString("title", reminder.getTitle());
         reminderInfo.putString("description", reminder.getDescription());
 
