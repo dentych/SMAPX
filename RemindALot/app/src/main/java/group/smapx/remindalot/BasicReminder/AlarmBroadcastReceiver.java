@@ -67,7 +67,8 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
                         AlarmSounding = false;
                     }
                 })
-                .setIcon(android.R.drawable.ic_dialog_info);
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setCancelable(false);
 
         AlertDialog alertDialog = alertDialogBuilder.create();
 
@@ -82,17 +83,6 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
         alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
         alertDialog.show();
 
-        keepDialog(alertDialog);
     }
-
-    //Not my code, solution found here: http://stackoverflow.com/questions/7557265/prevent-dialog-dismissal-on-screen-rotation-in-android
-    private static void keepDialog(AlertDialog alertDialog) {
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(alertDialog.getWindow().getAttributes());
-        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        alertDialog.getWindow().setAttributes(lp);
-    }
-    //***
 }
 
