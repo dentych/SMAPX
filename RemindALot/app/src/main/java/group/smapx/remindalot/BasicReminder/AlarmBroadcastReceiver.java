@@ -22,7 +22,6 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Toast.makeText(context, "Yay, got it!", Toast.LENGTH_SHORT).show();
 
         Bundle reminderInfo = intent.getBundleExtra("reminderInfo");
         String title = reminderInfo.getString("title");

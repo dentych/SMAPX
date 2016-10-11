@@ -19,10 +19,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import group.smapx.remindalot.database.DatabaseDAO;
+import group.smapx.remindalot.adapter.ContactsAdapter;
 import group.smapx.remindalot.model.Contact;
 import group.smapx.remindalot.model.LocationData;
 import group.smapx.remindalot.model.Reminder;
@@ -171,7 +172,12 @@ public class ShowActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         txtTitle.setText(reminder.getTitle());
         txtDescription.setText(reminder.getDescription());
-        txtDate.setText(new Date(reminder.getDate()).toString());
+
+        //format timestamp
+        SimpleDateFormat format = new SimpleDateFormat("dd MMM, yyyy HH:mm");
+        String time = format.format(new Date(reminder.getDate()));
+        txtDate.setText(time);
+
         txtLocation.setText(reminder.getLocationData().getFormattedAddress());
         locationData = reminder.getLocationData();
         adapter.addAll(reminder.getContacts());
