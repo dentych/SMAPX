@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -24,14 +25,7 @@ public class DatabaseDAO {
     public long insertReminder(Reminder reminder) {
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
-        ContentValues cv = new ContentValues();
-        cv.put(ReminderContract.FeedEntry.COLUMN_TITLE, reminder.getTitle());
-        cv.put(ReminderContract.FeedEntry.COLUMN_DESCRIPTION, reminder.getDescription());
-        cv.put(ReminderContract.FeedEntry.COLUMN_DATE, reminder.getDate());
-        LocationData l = reminder.getLocationData();
-        cv.put(ReminderContract.FeedEntry.COLUMN_LOCATION_ADDRESS, l.getFormattedAddress());
-        cv.put(ReminderContract.FeedEntry.COLUMN_LOCATION_LAT, l.getLat());
-        cv.put(ReminderContract.FeedEntry.COLUMN_LOCATION_LON, l.getLon());
+        ContentValues cv = getContentValuesForReminder(reminder);
 
         long reminderId = db.insert(ReminderContract.FeedEntry.TABLE_NAME,
                 null, cv);
@@ -39,16 +33,7 @@ public class DatabaseDAO {
 
         Log.d(LOG_TAG, "Inserted reminder with ID " + reminderId);
 
-        for (Contact contact : reminder.getContacts()) {
-            cv = new ContentValues();
-            cv.put(ContactContract.FeedEntry.COLUMN_NAME, contact.getName());
-            cv.put(ContactContract.FeedEntry.COLUMN_PHONE_NUM, contact.getPhoneNumber());
-            cv.put(ContactContract.FeedEntry.COLUMN_REMINDER_FK, reminderId);
-
-            long contactId = db.insert(ContactContract.FeedEntry.TABLE_NAME,
-                    null, cv);
-            Log.d(LOG_TAG, "Inserted contact with ID " + contactId);
-        }
+        insertContactsForReminder(reminder);
 
         return reminderId;
     }
@@ -56,14 +41,13 @@ public class DatabaseDAO {
     public boolean deleteReminder(long reminderId) {
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
-        String selection = ContactContract.FeedEntry.COLUMN_REMINDER_FK + " = ?";
-        String[] selectionArgs = {String.valueOf(reminderId)};
-        int contactsDeleted = db.delete(ContactContract.FeedEntry.TABLE_NAME, selection, selectionArgs);
+        deleteContactsForReminder(reminderId);
 
-        selection = ReminderContract.FeedEntry._ID + " = ?";
+        String selection = ReminderContract.FeedEntry._ID + " = ?";
+        String[] selectionArgs = {String.valueOf(reminderId)};
         int remindersDeleted = db.delete(ReminderContract.FeedEntry.TABLE_NAME, selection, selectionArgs);
 
-        return (contactsDeleted > 0) && (remindersDeleted > 0);
+        return (remindersDeleted > 0);
     }
 
     public Reminder getReminder(long reminderId) {
@@ -148,6 +132,27 @@ public class DatabaseDAO {
         return reminders;
     }
 
+    public boolean updateReminder(Reminder reminder) {
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+        deleteContactsForReminder(reminder.getId());
+        insertContactsForReminder(reminder);
+
+        ContentValues cv = getContentValuesForReminder(reminder);
+
+        String where = ReminderContract.FeedEntry._ID + " = ?";
+        String[] whereArgs = { String.valueOf(reminder.getId()) };
+
+        int rowsAffected = db.update(
+                ReminderContract.FeedEntry.TABLE_NAME,
+                cv,
+                where,
+                whereArgs
+        );
+
+        return rowsAffected > 0;
+    }
+
     private ArrayList<Contact> getContactsForReminder(long reminderId) {
         SQLiteDatabase db = databaseHelper.getReadableDatabase();
 
@@ -181,5 +186,44 @@ public class DatabaseDAO {
         }
 
         return contacts;
+    }
+
+    @NonNull
+    private ContentValues getContentValuesForReminder(Reminder reminder) {
+        ContentValues cv = new ContentValues();
+        cv.put(ReminderContract.FeedEntry.COLUMN_TITLE, reminder.getTitle());
+        cv.put(ReminderContract.FeedEntry.COLUMN_DESCRIPTION, reminder.getDescription());
+        cv.put(ReminderContract.FeedEntry.COLUMN_DATE, reminder.getDate());
+        LocationData l = reminder.getLocationData();
+        cv.put(ReminderContract.FeedEntry.COLUMN_LOCATION_ADDRESS, l.getFormattedAddress());
+        cv.put(ReminderContract.FeedEntry.COLUMN_LOCATION_LAT, l.getLat());
+        cv.put(ReminderContract.FeedEntry.COLUMN_LOCATION_LON, l.getLon());
+        return cv;
+    }
+
+    private void insertContactsForReminder(Reminder reminder) {
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+        ContentValues cv;
+        for (Contact contact : reminder.getContacts()) {
+            cv = new ContentValues();
+            cv.put(ContactContract.FeedEntry.COLUMN_NAME, contact.getName());
+            cv.put(ContactContract.FeedEntry.COLUMN_PHONE_NUM, contact.getPhoneNumber());
+            cv.put(ContactContract.FeedEntry.COLUMN_REMINDER_FK, reminder.getId());
+
+            long contactId = db.insert(ContactContract.FeedEntry.TABLE_NAME,
+                    null, cv);
+            Log.d(LOG_TAG, "Inserted contact with ID " + contactId);
+        }
+    }
+
+    private boolean deleteContactsForReminder(long reminderId) {
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+        String selection = ContactContract.FeedEntry.COLUMN_REMINDER_FK + " = ?";
+        String[] selectionArgs = { String.valueOf(reminderId) };
+        int contactsDeleted = db.delete(ContactContract.FeedEntry.TABLE_NAME, selection, selectionArgs);
+
+        return contactsDeleted > 0;
     }
 }

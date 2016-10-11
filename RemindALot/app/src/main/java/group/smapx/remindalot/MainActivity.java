@@ -122,6 +122,9 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     }
                 }
+
+                db.updateReminder(reminder);
+                b.setAlarm(reminder);
                 Log.d(LOG_TAG, "Done editing.");
             }
         }
