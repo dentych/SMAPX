@@ -75,7 +75,14 @@ public class ShowActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         fillContactList();
 
+        clearContactList();
+
         setupFabClickListeners();
+    }
+
+    private void clearContactList() {
+        adapter.clear();
+        listContacts.removeAllViews();
     }
 
     private void findViews() {
@@ -180,6 +187,8 @@ public class ShowActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         txtLocation.setText(reminder.getLocationData().getFormattedAddress());
         locationData = reminder.getLocationData();
+        clearContactList();
         adapter.addAll(reminder.getContacts());
+        fillContactList();
     }
 }
