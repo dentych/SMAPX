@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-    <!-- Here you put the rest of your current view-->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -35,25 +30,6 @@
         android:layout_alignEnd="@+id/placement" />
 
 
-    <ListView
-        android:layout_width="match_parent"
-        android:id="@+id/contactList"
-        android:layout_height="120dp"
-        android:layout_below="@+id/peopleBtn"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="34dp" />
-
-    <Button
-        android:text="OK"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignLeft="@+id/peopleBtn"
-        android:layout_alignStart="@+id/peopleBtn"
-        android:id="@+id/OKBtn"
-        style="@style/Widget.AppCompat.Button.Colored" />
-
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -72,6 +48,31 @@
         android:layout_toStartOf="@+id/searchBtn" />
 
     <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:drawableLeft="@drawable/geofence"
+        android:drawablePadding="5dp"
+        android:hint="Location"
+        android:id="@+id/placement"
+        android:layout_below="@+id/datepicker"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/cancelBtn"
+        android:layout_toStartOf="@+id/cancelBtn" />
+
+    <Button
+        android:text="Search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/searchBtn"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_below="@+id/timepicker"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <EditText
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Date"
@@ -86,20 +87,27 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <EditText
+    <Button
+        android:text="Cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:drawableLeft="@drawable/geofence"
-        android:drawablePadding="5dp"
-        android:hint="Location"
-        android:id="@+id/placement"
-        android:layout_below="@+id/datepicker"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@+id/cancelBtn"
-        android:layout_toStartOf="@+id/cancelBtn" />
+        android:id="@+id/cancelBtn"
+        style="@style/Widget.AppCompat.Button.Small"
+        android:layout_below="@+id/placement"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:text="OK"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/OKBtn"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_below="@+id/cancelBtn"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignLeft="@+id/cancelBtn"
+        android:layout_alignStart="@+id/cancelBtn" />
 
     <Button
         android:text="Add description"
@@ -121,32 +129,19 @@
         android:drawablePadding="5dp"
         android:id="@+id/peopleBtn"
         style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_below="@+id/searchBtn"
+        android:layout_toRightOf="@+id/descButton"
+        android:layout_toEndOf="@+id/descButton" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:id="@+id/contactList"
+        android:layout_height="120dp"
         android:layout_below="@+id/descButton"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <Button
-        android:text="Search"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/searchBtn"
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
-        android:layout_below="@+id/timepicker"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <Button
-        android:text="Cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="70dp"
-        android:layout_marginEnd="70dp"
-        android:id="@+id/cancelBtn"
-        style="@style/Widget.AppCompat.Button.Small"
-        android:layout_below="@+id/peopleBtn"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="12dp" />
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/OKBtn"
+        android:layout_toStartOf="@+id/OKBtn" />
 
     <![CDATA[
 
@@ -165,4 +160,3 @@
 
 ]]>
 </RelativeLayout>
-</ScrollView>
