@@ -6,11 +6,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -39,7 +41,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     @Override
     public void onCreate() {
         super.onCreate();
-
+        Log.d("Debug","Created");
         travelManager = new TravelManager();
         db = new DatabaseDAO(getBaseContext());
     }
@@ -49,16 +51,19 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         long delay = 60000;
         if (!googleApiConnected) {
             googleApiClient = new GoogleApiClient.Builder(getBaseContext())
+                    .addApi(LocationServices.API)
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .build();
         }
+        googleApiClient.connect();
 
         return START_STICKY;
     }
 
     @Override
     public void onDestroy() {
+        Log.d("Debug","Destroy");
         super.onDestroy();
         stopLocationUpdates();
     }
@@ -77,9 +82,10 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     }
 
     private void startLocationUpdates() {
+
         LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(600000);
-        locationRequest.setFastestInterval(300000);
+        locationRequest.setInterval(2500);
+        locationRequest.setFastestInterval(1000);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED) {
@@ -95,6 +101,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        Log.d("Debug","On connected, starting shit");
         googleApiConnected = true;
         startLocationUpdates();
     }
@@ -111,6 +118,8 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onLocationChanged(Location location) {
+        Log.d("Debug","New location: " +location.getLatitude() + " / " + location.getLongitude() );
+
         Reminder reminder = db.getFirstReminder();
 
         double lat = location.getLatitude();

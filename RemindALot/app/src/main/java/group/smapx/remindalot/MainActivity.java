@@ -30,6 +30,7 @@ import group.smapx.remindalot.BasicReminder.BasicReminder;
 import group.smapx.remindalot.SMShelper.SMShelper;
 import group.smapx.remindalot.adapter.ReminderAdapter;
 import group.smapx.remindalot.database.DatabaseDAO;
+import group.smapx.remindalot.locationservice.LocationService;
 import group.smapx.remindalot.model.Reminder;
 
 public class MainActivity extends AppCompatActivity {
@@ -47,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         final ListView listReminder = (ListView) findViewById(R.id.listReminders);
         setSupportActionBar(toolbar);
+        startService(new Intent(this, LocationService.class));
+
 
         basicReminder = new BasicReminder(this);
          reminderCount = (TextView)findViewById(R.id.reminder_count);
