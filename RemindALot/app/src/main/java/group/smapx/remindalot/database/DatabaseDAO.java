@@ -19,7 +19,7 @@ public class DatabaseDAO {
     private DatabaseHelper databaseHelper;
 
     public DatabaseDAO(Context context) {
-        databaseHelper = new DatabaseHelper(context);
+        databaseHelper = DatabaseHelper.getInstance(context);
     }
 
     public long insertReminder(Reminder reminder) {
@@ -72,17 +72,7 @@ public class DatabaseDAO {
             );
 
             if (c.moveToFirst()) {
-                reminder = new Reminder();
-
-                reminder.setId(c.getLong(0));
-                reminder.setTitle(c.getString(1));
-                reminder.setDescription(c.getString(2));
-                reminder.setDate(c.getLong(3));
-                LocationData l = new LocationData(c.getString(5), c.getString(6), c.getString(4));
-                reminder.setLocationData(l);
-
-                ArrayList<Contact> contacts = getContactsForReminder(reminderId);
-                reminder.setContacts(contacts);
+                reminder = createReminderFromCursor(c);
             }
         } finally {
             if (c != null) {
@@ -110,16 +100,7 @@ public class DatabaseDAO {
 
             if (c.moveToFirst()) {
                 do {
-                    long id = c.getLong(0);
-                    Reminder reminder = new Reminder();
-                    reminder.setId(c.getLong(0));
-                    reminder.setTitle(c.getString(1));
-                    reminder.setDescription(c.getString(2));
-                    reminder.setDate(c.getLong(3));
-                    LocationData l = new LocationData(c.getString(5), c.getString(6), c.getString(4));
-                    reminder.setLocationData(l);
-                    ArrayList<Contact> contacts = getContactsForReminder(id);
-                    reminder.setContacts(contacts);
+                    Reminder reminder = createReminderFromCursor(c);
                     reminders.add(reminder);
                 } while (c.moveToNext());
             }
@@ -151,6 +132,31 @@ public class DatabaseDAO {
         );
 
         return rowsAffected > 0;
+    }
+
+    public Reminder getFirstReminder() {
+        SQLiteDatabase db = databaseHelper.getReadableDatabase();
+
+        Cursor c = null;
+        Reminder firstReminder = null;
+        try {
+            c = db.query(
+                    ReminderContract.FeedEntry.TABLE_NAME,
+                    ReminderContract.PROJECTION,
+                    null, null, null, null,
+                    ReminderContract.FeedEntry.COLUMN_DATE,
+                    String.valueOf(1)
+            );
+
+            if (c.moveToFirst()) {
+                firstReminder = createReminderFromCursor(c);
+            }
+        } finally {
+            if (c != null)
+                c.close();
+        }
+
+        return firstReminder;
     }
 
     private ArrayList<Contact> getContactsForReminder(long reminderId) {
@@ -188,19 +194,6 @@ public class DatabaseDAO {
         return contacts;
     }
 
-    @NonNull
-    private ContentValues getContentValuesForReminder(Reminder reminder) {
-        ContentValues cv = new ContentValues();
-        cv.put(ReminderContract.FeedEntry.COLUMN_TITLE, reminder.getTitle());
-        cv.put(ReminderContract.FeedEntry.COLUMN_DESCRIPTION, reminder.getDescription());
-        cv.put(ReminderContract.FeedEntry.COLUMN_DATE, reminder.getDate());
-        LocationData l = reminder.getLocationData();
-        cv.put(ReminderContract.FeedEntry.COLUMN_LOCATION_ADDRESS, l.getFormattedAddress());
-        cv.put(ReminderContract.FeedEntry.COLUMN_LOCATION_LAT, l.getLat());
-        cv.put(ReminderContract.FeedEntry.COLUMN_LOCATION_LON, l.getLon());
-        return cv;
-    }
-
     private void insertContactsForReminder(Reminder reminder) {
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
@@ -225,5 +218,33 @@ public class DatabaseDAO {
         int contactsDeleted = db.delete(ContactContract.FeedEntry.TABLE_NAME, selection, selectionArgs);
 
         return contactsDeleted > 0;
+    }
+
+    @NonNull
+    private ContentValues getContentValuesForReminder(Reminder reminder) {
+        ContentValues cv = new ContentValues();
+        cv.put(ReminderContract.FeedEntry.COLUMN_TITLE, reminder.getTitle());
+        cv.put(ReminderContract.FeedEntry.COLUMN_DESCRIPTION, reminder.getDescription());
+        cv.put(ReminderContract.FeedEntry.COLUMN_DATE, reminder.getDate());
+        LocationData l = reminder.getLocationData();
+        cv.put(ReminderContract.FeedEntry.COLUMN_LOCATION_ADDRESS, l.getFormattedAddress());
+        cv.put(ReminderContract.FeedEntry.COLUMN_LOCATION_LAT, l.getLat());
+        cv.put(ReminderContract.FeedEntry.COLUMN_LOCATION_LON, l.getLon());
+        return cv;
+    }
+
+    @NonNull
+    private Reminder createReminderFromCursor(Cursor c) {
+        long id = c.getLong(0);
+        Reminder reminder = new Reminder();
+        reminder.setId(c.getLong(0));
+        reminder.setTitle(c.getString(1));
+        reminder.setDescription(c.getString(2));
+        reminder.setDate(c.getLong(3));
+        LocationData l = new LocationData(c.getString(5), c.getString(6), c.getString(4));
+        reminder.setLocationData(l);
+        ArrayList<Contact> contacts = getContactsForReminder(id);
+        reminder.setContacts(contacts);
+        return reminder;
     }
 }

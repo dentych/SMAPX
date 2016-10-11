@@ -8,8 +8,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final int version = 1;
     private static final String DB_NAME = "RemindALot.db";
     private static final String LOG_TAG = "DatabaseHelper";
+    private static DatabaseHelper instance;
 
-    public DatabaseHelper(Context context) {
+    public static synchronized DatabaseHelper getInstance(Context context) {
+        if (instance == null)
+            instance = new DatabaseHelper(context);
+
+        return instance;
+    }
+    private DatabaseHelper(Context context) {
         super(context, DB_NAME, null, version);
     }
 
