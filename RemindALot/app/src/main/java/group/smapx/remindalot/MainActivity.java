@@ -109,9 +109,6 @@ public class MainActivity extends AppCompatActivity {
                 new IntentFilter(ACTION_REMINDER_EDITED));
 
         checkPermissions();
-
-        SMShelper sms = new SMShelper(this);
-        sms.sendSMS(((Reminder) listReminder.getItemAtPosition(0)).getContacts(), "10");
     }
 
     private void checkPermissions() {
