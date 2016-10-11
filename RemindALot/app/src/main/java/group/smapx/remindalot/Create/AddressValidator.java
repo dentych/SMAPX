@@ -34,15 +34,13 @@ public class AddressValidator {
         } catch (IOException e) {
             throw new Exception("Error while downloading data: " + e.getMessage());
         }
-        System.out.println(responeData);
-        JSONParser parser = new JSONParser();
+              JSONParser parser = new JSONParser();
 
         Object obj = parser.parse(responeData);
         JSONObject responseObject = (JSONObject) obj;
 
 
         JSONArray resultsArray = (JSONArray) responseObject.get("results");
-        Log.d("Debug","Size: " + resultsArray.size());
         if (resultsArray.size() == 0)
             return false;
         JSONObject jsonObject2 = (JSONObject) resultsArray.get(0);
