@@ -7,10 +7,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-/**
- * Created by benla on 10/5/2016.
- */
-
 public class HTTPRequestExecutor {
 
     HttpURLConnection connection;

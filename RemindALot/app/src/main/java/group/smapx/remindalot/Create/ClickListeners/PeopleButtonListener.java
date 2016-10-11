@@ -10,10 +10,6 @@ import android.view.View;
 import group.smapx.remindalot.Create.ReciverInterfaces.ContactReceiver;
 
 
-/**
- * Created by benla on 10/6/2016.
- */
-
 public class PeopleButtonListener implements View.OnClickListener {
     static final int PICK_CONTACT = 1;
     private final ContactReceiver receiver;

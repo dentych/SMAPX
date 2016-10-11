@@ -10,10 +10,6 @@ import java.util.TimeZone;
 
 import group.smapx.remindalot.Create.ReciverInterfaces.DateTimeReceiver;
 
-/**
- * Created by benla on 10/5/2016.
- */
-
 public class TimeDialog implements View.OnClickListener, TimePickerDialog.OnTimeSetListener {
     private final Context context;
     private final DateTimeReceiver receiver;
@@ -30,6 +26,7 @@ public class TimeDialog implements View.OnClickListener, TimePickerDialog.OnTime
     public void onClick(View v) {
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         TimePickerDialog dialog = new TimePickerDialog(this.context, this, 12, 0, true);
+        dialog.setTitle("");
         dialog.show();
     }
 
