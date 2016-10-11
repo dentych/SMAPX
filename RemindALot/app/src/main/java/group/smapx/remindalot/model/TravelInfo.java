@@ -1,9 +1,5 @@
 package group.smapx.remindalot.model;
 
-/**
- * Created by benla on 10/11/2016.
- */
-
 public class TravelInfo {
     public static class TravelType{
         public static String WALKING = "walking";

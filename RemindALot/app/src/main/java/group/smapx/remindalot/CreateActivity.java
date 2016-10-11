@@ -77,50 +77,27 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
         timeText.setOnClickListener(timeDialog);
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create);
-        getPermissions();
-        this.peoplebuttonListener = new PeopleButtonListener(this, this);
-        this.titleText = (EditText) findViewById(R.id.titleText);
-        initDateTimeListeners();
-        initLocationListener();
-        initContactList();
-        initPeopleBtn();
-        initDescriptionDialog();
-        initSearchbtn();
-        adapter = new ContactsAdapter(this);
-        contactList.setAdapter(adapter);
+    private void populateFields() {
+        if (reminder == null)
+            return;
 
-        contactList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(CreateActivity.this, "Contact deleted", Toast.LENGTH_LONG);
-                adapter.remove(adapter.getItem(position));
-                return true;
-            }
-        });
-
-        if (getIntent() != null && getIntent().hasExtra("reminder")) {
-            reminder = (Reminder) getIntent().getSerializableExtra("reminder");
-            if (reminder != null) {
-                titleText.setText(reminder.getTitle());
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(reminder.getDate());
-                setDateText(calendar);
-                setTimeText(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
-                for (Contact contact : reminder.getContacts()) {
-                    adapter.add(contact);
-                }
-                locationText.setText(reminder.getLocationData().getFormattedAddress());
-
-            } else this.reminder = new Reminder();
-        } else {
-            reminder = new Reminder();
+        if (reminder.getTitle() != null) {
+            titleText.setText(reminder.getTitle());
         }
-
-        initButtons();
+        if (reminder.getDate() > 0) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(reminder.getDate());
+            setDateText(calendar);
+            setTimeText(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+        }
+        if (reminder.getContacts() != null) {
+            for (Contact contact : reminder.getContacts()) {
+                adapter.add(contact);
+            }
+        }
+        if (reminder.getLocationData() != null) {
+            locationText.setText(reminder.getLocationData().getFormattedAddress());
+        }
     }
 
     private void initSearchbtn() {
@@ -141,12 +118,6 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
     private void initContactList() {
         this.contactList = (ListView) findViewById(R.id.contactList);
 
-    }
-
-    @Override
-    public void onActivityResult(int reqCode, int resultCode, Intent data) {
-        super.onActivityResult(reqCode, resultCode, data);
-        peoplebuttonListener.onActivityResult(reqCode, resultCode, data);
     }
 
     private void getPermissions() {
@@ -203,6 +174,7 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
     }
 
     private boolean validateInput() {
+        Log.d("HEJ!", "GetTSE: " + getTSE() + ". New date: " + new Date().getTime());
         if (isNullOrWhiteSpace(titleText.getText().toString())) {
             Toast.makeText(this, "Title can not be empty", Toast.LENGTH_LONG).show();
             Log.d("Debug", "Title");
@@ -223,6 +195,7 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
             Log.d("Debug", "Datetime");
             return false;
         }
+
         return true;
 
     }
@@ -234,6 +207,85 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
         if (this.year == 0 || this.month == 0 || this.day == 0)
             return 0;
         return calendar.getTimeInMillis();
+    }
+
+    private void setDateText(Calendar calendar) {
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy", Locale.getDefault());
+        dateText.setText(format.format(calendar.getTime()));
+    }
+
+    private void setTimeText(int hour, int minute) {
+        timeText.setText((hour > 9 ? hour : "0" + hour) + ":" + (minute > 9 ? minute : "0" + minute));
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_create);
+        getPermissions();
+        this.peoplebuttonListener = new PeopleButtonListener(this, this);
+        this.titleText = (EditText) findViewById(R.id.titleText);
+        initDateTimeListeners();
+        initLocationListener();
+        initContactList();
+        initPeopleBtn();
+        initDescriptionDialog();
+        initSearchbtn();
+        adapter = new ContactsAdapter(this);
+        contactList.setAdapter(adapter);
+
+        contactList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(CreateActivity.this, "Contact deleted", Toast.LENGTH_LONG);
+                adapter.remove(adapter.getItem(position));
+                return true;
+            }
+        });
+
+        if (getIntent() != null && getIntent().hasExtra("reminder")) {
+            reminder = (Reminder) getIntent().getSerializableExtra("reminder");
+            populateFields();
+        } else if (savedInstanceState != null) {
+            reminder = (Reminder) savedInstanceState.getSerializable("reminder");
+            populateFields();
+        } else {
+            reminder = new Reminder();
+        }
+
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(reminder.getDate());
+        setDateFields(c);
+
+        initButtons();
+    }
+
+    private void setDateFields(Calendar c) {
+        year = c.get(Calendar.YEAR);
+        month = c.get(Calendar.MONTH);
+        day = c.get(Calendar.DAY_OF_MONTH);
+        hour = c.get(Calendar.HOUR_OF_DAY);
+        minute = c.get(Calendar.MINUTE);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        ArrayList<Contact> contacts = new ArrayList<>();
+        if (adapter.getCount() > 0) {
+            for (int i = 0; i < adapter.getCount(); i++) {
+                contacts.add(adapter.getItem(i));
+            }
+        }
+        reminder.setContacts(contacts);
+        outState.putSerializable("reminder", reminder);
+    }
+
+    @Override
+    public void onActivityResult(int reqCode, int resultCode, Intent data) {
+        super.onActivityResult(reqCode, resultCode, data);
+        peoplebuttonListener.onActivityResult(reqCode, resultCode, data);
     }
 
     @Override
@@ -284,15 +336,6 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
         remindCalender.set(Calendar.DAY_OF_MONTH, day);
         setDateText(remindCalender);
 
-    }
-
-    private void setDateText(Calendar calendar) {
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy", Locale.getDefault());
-        dateText.setText(format.format(calendar.getTime()));
-    }
-
-    private void setTimeText(int hour, int minute) {
-        timeText.setText((hour > 9 ? hour : "0" + hour) + ":" + (minute > 9 ? minute : "0" + minute));
     }
 
     @Override

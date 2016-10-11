@@ -10,10 +10,6 @@ import java.util.TimeZone;
 
 import group.smapx.remindalot.Create.ReciverInterfaces.DateTimeReceiver;
 
-/**
- * Created by benla on 10/5/2016.
- */
-
 public class DateDialog implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
     private final Context context;
     private final DateTimeReceiver receiver;

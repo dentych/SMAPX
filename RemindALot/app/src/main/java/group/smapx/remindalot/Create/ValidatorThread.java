@@ -7,10 +7,6 @@ import android.widget.Toast;
 import group.smapx.remindalot.Create.ReciverInterfaces.LocationDataReceiver;
 import group.smapx.remindalot.model.LocationData;
 
-/**
- * Created by benla on 10/6/2016.
- */
-
 public class ValidatorThread extends AsyncTask<String, Integer, LocationData> {
 
     boolean err;
