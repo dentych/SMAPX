@@ -47,6 +47,8 @@ public class PermissionManager extends AppCompatActivity {
         switch (permission) {
             case Manifest.permission.READ_CONTACTS:
                 return 1;
+            case Manifest.permission.SEND_SMS:
+                return 2;
             default:
                 return 0;
 
