@@ -1,32 +1,34 @@
 package group.smapx.remindalot.SMShelper;
 
 import android.Manifest;
-import android.app.Activity;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.support.v4.content.ContextCompat;
 import android.telephony.SmsManager;
 import android.util.Log;
 
 import java.util.List;
 
-import group.smapx.remindalot.Permitter.PermissionCallback;
-import group.smapx.remindalot.Permitter.PermissionManager;
 import group.smapx.remindalot.model.Contact;
 
-public class SMShelper implements PermissionCallback {
-
+public class SMShelper {
+    private Context context;
     private String LOG_TAG = "SMShelper";
-    private Activity activity;
-    private PermissionManager permissionManager = new PermissionManager();
     private boolean permissionsGranted = false;
 
-    public SMShelper(Activity receivedActivity) {
-        activity = receivedActivity;
+    public SMShelper(Context context) {
+        this.context = context;
         getPermissions();
         Log.d(LOG_TAG, "Create SMShelper");
     }
 
     private void getPermissions() {
         Log.d(LOG_TAG, "Getting permissions");
-        permissionManager.getPermission(activity, Manifest.permission.SEND_SMS, this);
+        int permission = ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS);
+
+        if (permission == PackageManager.PERMISSION_GRANTED) {
+            permissionsGranted = true;
+        }
     }
 
     public void sendSMS(List<Contact> contactList, String delay) {
@@ -48,17 +50,5 @@ public class SMShelper implements PermissionCallback {
                 }
             }
         }
-    }
-
-    @Override
-    public void onPermissionGranted() {
-        permissionsGranted = true;
-        Log.d(LOG_TAG, "Permission granted");
-    }
-
-    @Override
-    public void onPermissionDenied() {
-        permissionsGranted = false;
-        Log.d(LOG_TAG, "Permission denied");
     }
 }

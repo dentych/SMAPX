@@ -1,8 +1,13 @@
 package group.smapx.remindalot;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -28,14 +33,12 @@ import group.smapx.remindalot.Create.ReciverInterfaces.DateTimeReceiver;
 import group.smapx.remindalot.Create.ReciverInterfaces.DescriptionReceiver;
 import group.smapx.remindalot.Create.ReciverInterfaces.LocationDataReceiver;
 import group.smapx.remindalot.Create.ValidatorThread;
-import group.smapx.remindalot.Permitter.PermissionCallback;
-import group.smapx.remindalot.Permitter.PermissionManager;
 import group.smapx.remindalot.adapter.ContactsAdapter;
 import group.smapx.remindalot.model.Contact;
 import group.smapx.remindalot.model.LocationData;
 import group.smapx.remindalot.model.Reminder;
 
-public class CreateActivity extends AppCompatActivity implements PermissionCallback, ContactReceiver, DescriptionReceiver, DateTimeReceiver, LocationDataReceiver {
+public class CreateActivity extends AppCompatActivity implements ContactReceiver, DescriptionReceiver, DateTimeReceiver, LocationDataReceiver {
     public static final int RESULT_CREATE = 100;
     EditText dateText, titleText, timeText, locationText;
     DateDialog dateDialog;
@@ -46,7 +49,6 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
     Button okBtn, cancelBtn, descrButton, contactButton;
     Reminder reminder;
     boolean isPermissionReadContacts = false;
-    PermissionManager permissionManager = new PermissionManager();
     ListView contactList;
     PeopleButtonListener peoplebuttonListener;
     private int hour, minute, day, month, year = 0;
@@ -124,7 +126,13 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
     }
 
     private void getPermissions() {
-        permissionManager.getPermission(CreateActivity.this, android.Manifest.permission.READ_CONTACTS, this);
+        String permission = Manifest.permission.READ_CONTACTS;
+        int permissionStatus = ContextCompat.checkSelfPermission(this, permission);
+        if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+            initPeopleBtn();
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{permission}, 1);
+        }
     }
 
     private void initPeopleBtn() {
@@ -305,18 +313,6 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
     }
 
     @Override
-    public void onPermissionGranted() {
-        Log.d("Debug", "Permission granted");
-        isPermissionReadContacts = true;
-        initPeopleBtn();
-    }
-
-    @Override
-    public void onPermissionDenied() {
-        isPermissionReadContacts = false;
-    }
-
-    @Override
     public void onContactChosen(String name, String phonenumbr) {
         this.adapter.add(new Contact(name, phonenumbr));
     }
@@ -358,5 +354,17 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
     public void onLocationDataReady(LocationData locationData) {
         reminder.setLocationData(locationData);
         locationText.setText(locationData.getFormattedAddress());
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 1 && grantResults.length == 1) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d("Debug", "Permission granted");
+                initPeopleBtn();
+            }
+        }
     }
 }
