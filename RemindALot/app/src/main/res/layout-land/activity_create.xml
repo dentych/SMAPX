@@ -93,9 +93,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/cancelBtn"
         style="@style/Widget.AppCompat.Button.Small"
-        android:layout_below="@+id/placement"
+        android:layout_above="@+id/OKBtn"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"/>
 
     <Button
         android:text="OK"
@@ -103,11 +103,11 @@
         android:layout_height="wrap_content"
         android:id="@+id/OKBtn"
         style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_below="@+id/cancelBtn"
+        android:layout_alignStart="@+id/cancelBtn"
+        android:layout_alignLeft="@+id/cancelBtn"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignLeft="@+id/cancelBtn"
-        android:layout_alignStart="@+id/cancelBtn" />
+        android:layout_alignParentBottom="true" />
 
     <Button
         android:text="Add description"
