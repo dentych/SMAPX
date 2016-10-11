@@ -1,4 +1,4 @@
-package group.smapx.remindalot;
+package group.smapx.remindalot.BasicReminder;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -67,7 +67,8 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
                         AlarmSounding = false;
                     }
                 })
-                .setIcon(android.R.drawable.ic_dialog_info);
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setCancelable(false);
 
         AlertDialog alertDialog = alertDialogBuilder.create();
 
@@ -81,6 +82,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
         alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
         alertDialog.show();
+
     }
 }
 

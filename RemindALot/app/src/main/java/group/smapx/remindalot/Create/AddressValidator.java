@@ -10,17 +10,13 @@ import java.io.IOException;
 
 import group.smapx.remindalot.model.LocationData;
 
-/**
- * Created by benla on 10/5/2016.
- */
-
 
 public class AddressValidator {
 
-    final String APIConnector = "&key=";
-    final String API = "AIzaSyBr22PX72IGaOkU7SRQ6LDGQIcal9U2fFs";
-    final String AddressLookup = "https://maps.googleapis.com/maps/api/geocode/json?address=";
-    HTTPRequestExecutor requestExecutor = new HTTPRequestExecutor();
+    private final String APIConnector = "&key=";
+    private final String API = "AIzaSyBr22PX72IGaOkU7SRQ6LDGQIcal9U2fFs";
+    private final String AddressLookup = "https://maps.googleapis.com/maps/api/geocode/json?address=";
+    private HTTPRequestExecutor requestExecutor = new HTTPRequestExecutor();
     private LocationData locData;
 
     public boolean validate(String address) throws Exception {
