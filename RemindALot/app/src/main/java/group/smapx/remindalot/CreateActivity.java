@@ -104,23 +104,38 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
 
         if (getIntent() != null && getIntent().hasExtra("reminder")) {
             reminder = (Reminder) getIntent().getSerializableExtra("reminder");
-            if (reminder != null) {
-                titleText.setText(reminder.getTitle());
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(reminder.getDate());
-                setDateText(calendar);
-                setTimeText(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
-                for (Contact contact : reminder.getContacts()) {
-                    adapter.add(contact);
-                }
-                locationText.setText(reminder.getLocationData().getFormattedAddress());
-
-            } else this.reminder = new Reminder();
+            populateFields();
+        } else if (savedInstanceState != null) {
+            reminder = (Reminder) savedInstanceState.getSerializable("reminder");
+            populateFields();
         } else {
             reminder = new Reminder();
         }
 
         initButtons();
+    }
+
+    private void populateFields() {
+        if (reminder == null)
+            return;
+
+        if (reminder.getTitle() != null) {
+            titleText.setText(reminder.getTitle());
+        }
+        if (reminder.getDate() > 0) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(reminder.getDate());
+            setDateText(calendar);
+            setTimeText(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+        }
+        if (reminder.getContacts() != null) {
+            for (Contact contact : reminder.getContacts()) {
+                adapter.add(contact);
+            }
+        }
+        if (reminder.getLocationData() != null) {
+            locationText.setText(reminder.getLocationData().getFormattedAddress());
+        }
     }
 
     private void initSearchbtn() {
@@ -299,5 +314,19 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
     public void onLocationDataReady(LocationData locationData) {
         reminder.setLocationData(locationData);
         locationText.setText(locationData.getFormattedAddress());
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        ArrayList<Contact> contacts = new ArrayList<>();
+        if (adapter.getCount() > 0) {
+            for (int i = 0; i < adapter.getCount(); i++) {
+                contacts.add(adapter.getItem(i));
+            }
+        }
+        reminder.setContacts(contacts);
+        outState.putSerializable("reminder", reminder);
     }
 }
