@@ -1,7 +1,9 @@
 package group.smapx.remindalot;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -28,6 +30,7 @@ import group.smapx.remindalot.Create.ReciverInterfaces.LocationDataReceiver;
 import group.smapx.remindalot.Create.ValidatorThread;
 import group.smapx.remindalot.Permitter.PermissionCallback;
 import group.smapx.remindalot.Permitter.PermissionManager;
+import group.smapx.remindalot.adapter.ContactsAdapter;
 import group.smapx.remindalot.model.Contact;
 import group.smapx.remindalot.model.LocationData;
 import group.smapx.remindalot.model.Reminder;
@@ -95,9 +98,22 @@ public class CreateActivity extends AppCompatActivity implements PermissionCallb
 
         contactList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 Toast.makeText(CreateActivity.this, "Contact deleted", Toast.LENGTH_LONG);
-                adapter.remove(adapter.getItem(position));
+
+                new AlertDialog.Builder(CreateActivity.this)
+                        .setTitle("Delete Reminder")
+                        .setMessage("Are you sure you want to delete the reminder?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                adapter.remove(adapter.getItem(position));
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null)
+                        .setIcon(R.mipmap.ic_launcher)
+                        .show();
+
                 return true;
             }
         });

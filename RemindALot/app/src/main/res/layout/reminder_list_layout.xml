@@ -35,7 +35,9 @@
         android:id="@+id/time_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="0.20"
+        android:layout_weight="0"
+        android:singleLine="true"
+        android:ellipsize="none"
         android:text="@string/time" />
 
 </LinearLayout>

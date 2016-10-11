@@ -2,21 +2,25 @@ package group.smapx.remindalot;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.List;
 
 import group.smapx.remindalot.BasicReminder.BasicReminder;
+import group.smapx.remindalot.adapter.ReminderAdapter;
 import group.smapx.remindalot.database.DatabaseDAO;
 import group.smapx.remindalot.model.Reminder;
 
@@ -24,7 +28,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = "MainActivity";
     public static final String ACTION_REMINDER_EDITED = "group.smapx.remindalot.REMINDER_EDITED";
     private ReminderAdapter adapter;
-    private BasicReminder b;
+    private BasicReminder basicReminder;
+    private TextView reminderCount;
     private DatabaseDAO db;
 
     @Override
@@ -35,7 +40,9 @@ public class MainActivity extends AppCompatActivity {
         final ListView listReminder = (ListView) findViewById(R.id.listReminders);
         setSupportActionBar(toolbar);
 
-        b = new BasicReminder(this);
+        basicReminder = new BasicReminder(this);
+         reminderCount = (TextView)findViewById(R.id.reminder_count);
+
 
         FloatingActionButton fab_create = (FloatingActionButton) findViewById(R.id.fab);
         db = new DatabaseDAO(this);
@@ -55,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
 
         listReminder.setAdapter(adapter);
 
+        reminderCount.setText(String.valueOf(adapter.getCount()));
+
         listReminder.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -63,6 +72,28 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(view.getContext(), ShowActivity.class);
                 intent.putExtra("reminder", item);
                 startActivityForResult(intent, ShowActivity.RESULT_DELETE);
+            }
+        });
+
+        listReminder.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                final Reminder item = (Reminder) listReminder.getItemAtPosition(position);
+
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("Delete Reminder")
+                        .setMessage("Are you sure you want to delete the reminder?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                deleteReminder(item);
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null)
+                        .setIcon(R.mipmap.ic_launcher)
+                        .show();
+
+                return true;
             }
         });
 
@@ -84,21 +115,28 @@ public class MainActivity extends AppCompatActivity {
             Log.d(LOG_TAG, "Adapter count: " + adapter.getCount());
             db.insertReminder(reminder);
 
-            b.setAlarm(reminder);
+            basicReminder.setAlarm(reminder);
+            reminderCount.setText(String.valueOf(adapter.getCount()));
+
         } else if (resultCode == ShowActivity.RESULT_DELETE) {
             Reminder reminder = (Reminder) data.getSerializableExtra("reminder");
             Log.d(LOG_TAG, "Trying to delete reminder with ID " + reminder.getId());
+            deleteReminder(reminder);
 
-            long id = reminder.getId();
+        }
+    }
 
-            for (int i = 0; i < adapter.getCount(); i++) {
-                Reminder item = adapter.getItem(i);
-                if (item != null && item.getId() == id) {
-                    adapter.remove(item);
-                    db.deleteReminder(id);
-                    b.deleteAlarm(reminder);
-                    return;
-                }
+    private void deleteReminder(Reminder reminder) {
+        long id = reminder.getId();
+
+        for (int i = 0; i < adapter.getCount(); i++) {
+            Reminder item = adapter.getItem(i);
+            if (item != null && item.getId() == id) {
+                adapter.remove(item);
+                db.deleteReminder(id);
+                basicReminder.deleteAlarm(reminder);
+                reminderCount.setText(String.valueOf(adapter.getCount()));
+                return;
             }
         }
     }
@@ -125,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 db.updateReminder(reminder);
-                b.setAlarm(reminder);
+                basicReminder.setAlarm(reminder);
                 Log.d(LOG_TAG, "Done editing.");
             }
         }
