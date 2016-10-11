@@ -16,6 +16,7 @@ import android.widget.ListView;
 
 import java.util.List;
 
+import group.smapx.remindalot.BasicReminder.BasicReminder;
 import group.smapx.remindalot.database.DatabaseDAO;
 import group.smapx.remindalot.model.Reminder;
 

@@ -1,4 +1,4 @@
-package group.smapx.remindalot;
+package group.smapx.remindalot.BasicReminder;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;

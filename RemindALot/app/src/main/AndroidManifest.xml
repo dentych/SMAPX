@@ -33,7 +33,7 @@
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".ShowActivity" />
 
-        <receiver android:name=".AlarmBroadcastReceiver" />
+        <receiver android:name=".BasicReminder.AlarmBroadcastReceiver" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
