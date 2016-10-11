@@ -73,10 +73,6 @@ public class ShowActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        fillContactList();
-
-        clearContactList();
-
         setupFabClickListeners();
     }
 
