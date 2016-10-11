@@ -1,12 +1,17 @@
 package group.smapx.remindalot;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -16,10 +21,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import group.smapx.remindalot.BasicReminder.BasicReminder;
+import group.smapx.remindalot.SMShelper.SMShelper;
 import group.smapx.remindalot.adapter.ReminderAdapter;
 import group.smapx.remindalot.database.DatabaseDAO;
 import group.smapx.remindalot.model.Reminder;
@@ -99,6 +107,28 @@ public class MainActivity extends AppCompatActivity {
 
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver,
                 new IntentFilter(ACTION_REMINDER_EDITED));
+
+        checkPermissions();
+    }
+
+    private void checkPermissions() {
+        int locationPerm = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        int smsPerm = ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS);
+        List<String> permissionsToRequest = new ArrayList<>();
+        if (locationPerm != PackageManager.PERMISSION_GRANTED) {
+            permissionsToRequest.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+        if (smsPerm != PackageManager.PERMISSION_GRANTED) {
+            permissionsToRequest.add(Manifest.permission.SEND_SMS);
+        }
+
+        if (permissionsToRequest.size() != 0) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    permissionsToRequest.toArray(new String[permissionsToRequest.size()]),
+                    1
+            );
+        }
     }
 
     @Override
@@ -168,4 +198,22 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 1) {
+            for (int grant : grantResults) {
+                if (grant != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(
+                            this,
+                            "Both SMS and Location needed to function " +
+                                    "properly. Please enable it in the phone settings.",
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
+            }
+        }
+    }
 }
