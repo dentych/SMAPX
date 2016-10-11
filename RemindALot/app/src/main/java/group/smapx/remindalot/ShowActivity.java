@@ -2,6 +2,7 @@ package group.smapx.remindalot;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -9,7 +10,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -22,11 +22,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.Date;
 
+import group.smapx.remindalot.database.DatabaseDAO;
 import group.smapx.remindalot.model.Contact;
 import group.smapx.remindalot.model.LocationData;
 import group.smapx.remindalot.model.Reminder;
 
 public class ShowActivity extends AppCompatActivity implements OnMapReadyCallback {
+    public static final int RESULT_DELETE = 101;
     private LinearLayout listContacts;
     private MapFragment fragment;
     private ScrollView scrollView;
@@ -36,8 +38,10 @@ public class ShowActivity extends AppCompatActivity implements OnMapReadyCallbac
     private TextView txtTitle;
     private TextView txtDescription;
     private TextView txtDate;
+    private TextView txtLocation;
     private ContactsAdapter adapter;
     private LocationData locationData;
+    private Reminder originalReminder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,25 +54,12 @@ public class ShowActivity extends AppCompatActivity implements OnMapReadyCallbac
         fabDelete.setImageDrawable(getResources().getDrawable(R.drawable.ic_trash));
 
         if (savedInstanceState != null) {
-            txtTitle.setText(savedInstanceState.getString("title"));
-            txtDescription.setText(savedInstanceState.getString("description"));
-            txtDate.setText(savedInstanceState.getString("date"));
-            ArrayList<Contact> contacts = (ArrayList<Contact>) savedInstanceState.getSerializable("contacts");
-            if (contacts != null)
-                adapter.addAll(contacts);
-            locationData = (LocationData) savedInstanceState.getSerializable("locationData");
+            originalReminder = (Reminder) savedInstanceState.getSerializable("reminder");
         } else if (getIntent() != null) {
             Intent intent = getIntent();
-            Reminder reminder = (Reminder) intent.getSerializableExtra("reminder");
-
-            txtTitle.setText(reminder.getTitle());
-            txtDescription.setText(reminder.getDescription());
-            txtDate.setText(new Date(reminder.getDate()).toString());
-            ArrayList<Contact> contacts = reminder.getContacts();
-            if (contacts != null)
-                adapter.addAll(contacts);
-            locationData = reminder.getLocationData();
+            originalReminder = (Reminder) intent.getSerializableExtra("reminder");
         }
+        populateFields(originalReminder);
 
         fragment.getMapAsync(this);
 
@@ -96,6 +87,7 @@ public class ShowActivity extends AppCompatActivity implements OnMapReadyCallbac
         txtTitle = (TextView) findViewById(R.id.txtTitle);
         txtDescription = (TextView) findViewById(R.id.txtDescription);
         txtDate = (TextView) findViewById(R.id.txtDate);
+        txtLocation = (TextView) findViewById(R.id.txtLocation);
         adapter = new ContactsAdapter(this);
     }
 
@@ -103,22 +95,19 @@ public class ShowActivity extends AppCompatActivity implements OnMapReadyCallbac
         fabEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.putExtra("title", txtTitle.getText().toString());
-                intent.putExtra("description", txtDescription.getText().toString());
-                intent.putExtra("date", txtDate.getText().toString());
-
-                Toast.makeText(ShowActivity.this, "You clicked edit! This should open edit activity when it's created.",
-                        Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(ShowActivity.this, CreateActivity.class);
+                intent.putExtra("reminder", originalReminder);
+                startActivityForResult(intent, CreateActivity.RESULT_CREATE);
             }
         });
 
         fabDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Implement delete
-                Toast.makeText(ShowActivity.this, "You clicked DELETE! This is not yet implemented",
-                        Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent();
+                intent.putExtra("reminder", originalReminder);
+                setResult(RESULT_DELETE, intent);
+                finish();
             }
         });
     }
@@ -135,19 +124,14 @@ public class ShowActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putString("title", txtTitle.getText().toString());
-        outState.putString("description", txtDescription.getText().toString());
-        outState.putString("date", txtDate.getText().toString());
-        ArrayList<Contact> contacts = getContactsFromAdapter();
-        outState.putSerializable("contacts", contacts);
-        outState.putSerializable("locationData", locationData);
+        outState.putSerializable("reminder", originalReminder);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Log.d("ShowActivity", "MAP IS GOD DAMN READY! :D");
-        long lat = Long.parseLong(locationData.getLat());
-        long lon = Long.parseLong(locationData.getLon());
+        double lat = Double.parseDouble(locationData.getLat());
+        double lon = Double.parseDouble(locationData.getLon());
         LatLng position = new LatLng(lat, lon);
         googleMap.addMarker(new MarkerOptions().position(position));
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 15));
@@ -162,5 +146,34 @@ public class ShowActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
         return contacts;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == CreateActivity.RESULT_CREATE) {
+            originalReminder = (Reminder) data.getSerializableExtra("reminder");
+
+            populateFields(originalReminder);
+
+            Intent intent = new Intent(MainActivity.ACTION_REMINDER_EDITED);
+            intent.putExtra("reminder", originalReminder);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
+            fragment.getMapAsync(this);
+        }
+    }
+
+    private void populateFields(Reminder reminder) {
+        if (reminder == null) {
+            return;
+        }
+        txtTitle.setText(reminder.getTitle());
+        txtDescription.setText(reminder.getDescription());
+        txtDate.setText(new Date(reminder.getDate()).toString());
+        txtLocation.setText(reminder.getLocationData().getFormattedAddress());
+        locationData = reminder.getLocationData();
+        adapter.addAll(reminder.getContacts());
     }
 }
