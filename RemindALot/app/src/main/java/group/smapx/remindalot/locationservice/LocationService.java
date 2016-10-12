@@ -1,6 +1,7 @@
 package group.smapx.remindalot.locationservice;
 
 import android.Manifest;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,6 +17,8 @@ import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -56,7 +59,9 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
                     .addOnConnectionFailedListener(this)
                     .build();
         }
-        googleApiClient.connect();
+        if (!googleApiClient.isConnected()) {
+            googleApiClient.connect();
+        }
 
         return START_STICKY;
     }
@@ -66,6 +71,9 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         Log.d("Debug","Destroy");
         super.onDestroy();
         stopLocationUpdates();
+        if (googleApiClient.isConnected()) {
+            googleApiClient.disconnect();
+        }
     }
 
     @Nullable
@@ -86,6 +94,8 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setInterval(2500);
         locationRequest.setFastestInterval(1000);
+        locationRequest.setMaxWaitTime(5000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED) {
