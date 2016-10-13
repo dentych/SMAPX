@@ -161,6 +161,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         if (timeLeft < secondsOfTravel) {
             String delay = Long.toString((((secondsOfTravel-timeLeft) / (1000*60)) % 60));
             smShelper.sendSMS(reminder.getContacts(),delay);
+            reminder.setSmsSent(true);
         }
     }
 }
