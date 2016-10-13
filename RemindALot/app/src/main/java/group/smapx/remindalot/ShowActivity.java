@@ -1,10 +1,13 @@
 package group.smapx.remindalot;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatDrawableManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -52,8 +55,17 @@ public class ShowActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         findViews();
 
-        fabEdit.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_edit));
-        fabDelete.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_trash));
+        Drawable drawEdit;
+        Drawable drawTrash;
+        if (Build.VERSION.SDK_INT > 20) {
+            drawEdit = ContextCompat.getDrawable(this, R.drawable.ic_edit);
+            drawTrash = ContextCompat.getDrawable(this, R.drawable.ic_trash);
+        } else {
+            drawEdit = AppCompatDrawableManager.get().getDrawable(this, R.drawable.ic_edit);
+            drawTrash = AppCompatDrawableManager.get().getDrawable(this, R.drawable.ic_trash);
+        }
+        fabEdit.setImageDrawable(drawEdit);
+        fabDelete.setImageDrawable(drawTrash);
 
         if (savedInstanceState != null) {
             originalReminder = (Reminder) savedInstanceState.getSerializable("reminder");

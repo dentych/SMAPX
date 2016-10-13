@@ -44,7 +44,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     private Location lastLocation;
     private long lastLocationTime;
     private BasicReminder basicReminder;
-    private boolean googleApiConnected = false;
+    private boolean requestingUpdates = false;
     private boolean isMoving = false;
 
     @Override
@@ -60,15 +60,19 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         long delay = 60000;
-        if (!googleApiConnected) {
+        if (googleApiClient == null || !googleApiClient.isConnected()) {
             googleApiClient = new GoogleApiClient.Builder(getBaseContext())
                     .addApi(LocationServices.API)
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .build();
         }
-        if (!googleApiClient.isConnected()) {
-            googleApiClient.connect();
+        if (!requestingUpdates) {
+            if (googleApiClient.isConnected()) {
+                startLocationUpdates();
+            } else {
+                googleApiClient.connect();
+            }
         }
 
         return START_STICKY;
@@ -100,13 +104,14 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     private void startLocationUpdates() {
 
         LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(2500);
-        locationRequest.setFastestInterval(1000);
-        locationRequest.setMaxWaitTime(5000);
+        locationRequest.setInterval(30000);
+        locationRequest.setFastestInterval(10000);
+        locationRequest.setMaxWaitTime(300000);
         locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED) {
+            requestingUpdates = false;
             return;
         }
 
@@ -115,6 +120,8 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
                 locationRequest,
                 this
         );
+
+        requestingUpdates = true;
     }
 
     private void updateMovingState(Location location) {
@@ -137,18 +144,16 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.d(LOG_TAG, "On connected, starting shit");
-        googleApiConnected = true;
         startLocationUpdates();
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-        googleApiConnected = false;
+
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        googleApiConnected = false;
     }
 
     @Override
@@ -176,15 +181,16 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     @Override
     public void onTravelInfoReady(TravelInfo travelInfo) {
 
-        if (travelInfo == null) {
+        if (travelInfo == null || latestReminder == null) {
+            Log.d(LOG_TAG, "TravelInfo or Reminder null, aborting TravelInfoReady");
             return;
         }
 
         long timeLeft = latestReminder.getDate() - Calendar.getInstance().getTimeInMillis();
         long millisecondsOfTravel = travelInfo.getSecondsOfTravel() * 1000;
-        if(!latestReminder.isNotified()){
+        if (!latestReminder.isNotified()) {
             long basicReminderTime = latestReminder.getDate() - millisecondsOfTravel - TimeUnit.MINUTES.toMillis(15);
-            basicReminder.setAlarm(latestReminder,basicReminderTime);
+            basicReminder.setAlarm(latestReminder, basicReminderTime);
         }
 
         Log.d(LOG_TAG, "Milliseconds of travel: " + millisecondsOfTravel);

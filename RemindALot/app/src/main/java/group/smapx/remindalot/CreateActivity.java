@@ -53,10 +53,8 @@ public class CreateActivity extends AppCompatActivity implements ContactReceiver
     TimeDialog timeDialog;
     ContactsAdapter adapter;
     boolean addressValidated = false;
-    LocationData locationData;
     Button okBtn, cancelBtn, descrButton, contactButton;
     Reminder reminder;
-    boolean isPermissionReadContacts = false;
     RadioButton Drving, Walking, PublicTrans, Biking;
     ListView contactList;
     PeopleButtonListener peoplebuttonListener;

@@ -43,6 +43,6 @@
     <string name="permissions_needed_error">Både SMS og Lokation er nødvendig for at kunne fungere korrekt. Vær venlig at aktivere dette i telefon indstillinger.</string>
 
     <!--SMS-->
-    <string name="sms_part1">Jeg bliver desværre </string>
-    <string name="sms_part2"> minutter forsinket, vi ses senere!</string>
+    <string name="sms_part1">Jeg bliver desværre</string>
+    <string name="sms_part2">minutter forsinket, vi ses senere!</string>
 </resources>
