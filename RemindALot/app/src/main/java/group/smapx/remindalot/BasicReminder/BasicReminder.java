@@ -23,8 +23,7 @@ public class BasicReminder {
     public void setAlarm(Reminder reminder, long time) {
 
         Bundle reminderInfo = new Bundle();
-        reminderInfo.putString("title", reminder.getTitle());
-        reminderInfo.putString("description", reminder.getDescription());
+        reminderInfo.putSerializable("reminder", reminder);
 
         Intent setAlarm = new Intent(context, AlarmBroadcastReceiver.class);
         setAlarm.putExtra("reminderInfo", reminderInfo);

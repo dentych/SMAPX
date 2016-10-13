@@ -35,7 +35,8 @@ import group.smapx.remindalot.model.TravelInfo;
 public class LocationService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, TravelinfoReceier {
     private static final String LOG_TAG = "LocationService";
     private static final long LAST_LOCATION_UPDATE_INTERVAL = 60000;
-    SMShelper smShelper;
+    private static final int TRIGGER_DISTANCE = 50;
+    private SMShelper smShelper;
     private TravelManager travelManager;
     private DatabaseDAO db;
     private GoogleApiClient googleApiClient;
@@ -44,6 +45,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     private long lastLocationTime;
     private BasicReminder basicReminder;
     private boolean googleApiConnected = false;
+    private boolean isMoving = false;
 
     @Override
     public void onCreate() {
@@ -115,6 +117,23 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         );
     }
 
+    private void updateMovingState(Location location) {
+        long timeNow = Calendar.getInstance().getTimeInMillis();
+        if (lastLocation == null) {
+            lastLocation = location;
+            lastLocationTime = timeNow;
+            isMoving = false;
+        } else {
+            long timeSinceUpdated = timeNow - lastLocationTime;
+            if (timeSinceUpdated > LAST_LOCATION_UPDATE_INTERVAL) {
+                isMoving = lastLocation.distanceTo(location) > TRIGGER_DISTANCE;
+                Log.d(LOG_TAG, "Updated move state: " + isMoving);
+                lastLocation = location;
+                lastLocationTime = timeNow;
+            }
+        }
+    }
+
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.d(LOG_TAG, "On connected, starting shit");
@@ -136,16 +155,13 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     public void onLocationChanged(Location location) {
         Log.d(LOG_TAG, "New location: " + location.getLatitude() + " / " + location.getLongitude());
 
-        updateLastLocation(location);
+        updateMovingState(location);
 
         latestReminder = getFirstReminder();
         if (latestReminder == null) {
             return;
         }
 
-        if (latestReminder.isSmsSent()) {
-            return; // Kunne gøre fancy snask, but no.
-        }
         double lat = location.getLatitude();
         double lon = location.getLongitude();
         LocationData from = new LocationData(
@@ -155,31 +171,6 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         );
 
         travelManager.getTravelInfo(latestReminder.getMeansOfTransportation(), from, latestReminder.getLocationData(), this);
-
-
-    }
-
-    private void updateLastLocation(Location location) {
-        long timeNow = Calendar.getInstance().getTimeInMillis();
-        if (lastLocation == null) {
-            lastLocation = location;
-            lastLocationTime = timeNow;
-        } else {
-            long timeSinceUpdated = timeNow - lastLocationTime;
-            if (timeSinceUpdated > LAST_LOCATION_UPDATE_INTERVAL) {
-                lastLocation = location;
-                lastLocationTime = timeNow;
-            }
-        }
-    }
-
-    private boolean isMoving(Location location) {
-        boolean result = false;
-        if (lastLocation != null && location.distanceTo(lastLocation) > 50) {
-            result = true;
-        }
-
-        return result;
     }
 
     @Override
@@ -194,13 +185,12 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         if(!latestReminder.isNotified()){
             long basicReminderTime = latestReminder.getDate() - millisecondsOfTravel - TimeUnit.MINUTES.toMillis(15);
             basicReminder.setAlarm(latestReminder,basicReminderTime);
-            Log.d(LOG_TAG, Long.toString(basicReminderTime));
         }
 
         Log.d(LOG_TAG, "Milliseconds of travel: " + millisecondsOfTravel);
         Log.d(LOG_TAG, "Timeleft to reminder: " + timeLeft);
         Log.d(LOG_TAG, "Delay: " + (millisecondsOfTravel - timeLeft));
-        if (timeLeft < millisecondsOfTravel) {
+        if (timeLeft < millisecondsOfTravel && !latestReminder.isSmsSent() && isMoving) {
             Log.d("Debug", "IN IF: " + (millisecondsOfTravel - timeLeft));
             String delay = Long.toString((TimeUnit.MILLISECONDS.toMinutes(millisecondsOfTravel - timeLeft)));
             smShelper.sendSMS(latestReminder.getContacts(), delay);
@@ -211,7 +201,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onException(Exception e) {
-        Log.d("Error", "Exception caught: " + e.getMessage());
+        e.printStackTrace();
     }
 
     public Reminder getFirstReminder() {

@@ -242,6 +242,7 @@ public class DatabaseDAO {
         cv.put(ReminderContract.FeedEntry.COLUMN_SMS_SENT, reminder.isSmsSent());
         cv.put(ReminderContract.FeedEntry.COLUMN_TRANSPORTATION_TYPE,
                 reminder.getMeansOfTransportation());
+        cv.put(ReminderContract.FeedEntry.COLUMN_NOTIFIED, reminder.isNotified());
         return cv;
     }
 
@@ -255,13 +256,9 @@ public class DatabaseDAO {
         reminder.setDate(c.getLong(3));
         LocationData l = new LocationData(c.getString(5), c.getString(6), c.getString(4));
         reminder.setLocationData(l);
-        int smsSent = c.getInt(7);
-        if (smsSent > 0) {
-            reminder.setSmsSent(true);
-        } else {
-            reminder.setSmsSent(false);
-        }
+        reminder.setSmsSent(c.getInt(7) > 0);
         reminder.setMeansOfTransportation(c.getString(8));
+        reminder.setNotified(c.getInt(9) > 0);
         ArrayList<Contact> contacts = getContactsForReminder(id);
         reminder.setContacts(contacts);
         return reminder;
