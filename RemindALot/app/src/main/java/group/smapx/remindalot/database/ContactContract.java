@@ -15,7 +15,7 @@ public class ContactContract {
             "FOREIGN KEY(" + FeedEntry.COLUMN_REMINDER_FK + ") REFERENCES " +
             ReminderContract.FeedEntry.TABLE_NAME + "(" + ReminderContract.FeedEntry._ID + "))";
 
-    public static final String SQL_DROP_TABLE = "DROP TABLE IF EXIST " + FeedEntry.TABLE_NAME;
+    public static final String SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + FeedEntry.TABLE_NAME;
 
     public class FeedEntry implements BaseColumns {
         public static final String TABLE_NAME = "CONTACT";

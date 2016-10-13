@@ -230,6 +230,7 @@ public class DatabaseDAO {
         cv.put(ReminderContract.FeedEntry.COLUMN_LOCATION_ADDRESS, l.getFormattedAddress());
         cv.put(ReminderContract.FeedEntry.COLUMN_LOCATION_LAT, l.getLat());
         cv.put(ReminderContract.FeedEntry.COLUMN_LOCATION_LON, l.getLon());
+        cv.put(ReminderContract.FeedEntry.COLUMN_SMS_SENT, reminder.isSmsSent());
         return cv;
     }
 

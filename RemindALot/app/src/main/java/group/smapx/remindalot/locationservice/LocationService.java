@@ -154,6 +154,8 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         long timeLeft = reminder.getDate() - Calendar.getInstance().getTimeInMillis();
         long secondsOfTravel = travelInfo.getSecondsOfTravel();
 
+        Log.d(LOG_TAG, "Seconds of travel: " + secondsOfTravel);
+
         if (timeLeft < secondsOfTravel) {
             String delay = Long.toString((((secondsOfTravel-timeLeft) / (1000*60)) % 60));
             smShelper.sendSMS(reminder.getContacts(),delay);

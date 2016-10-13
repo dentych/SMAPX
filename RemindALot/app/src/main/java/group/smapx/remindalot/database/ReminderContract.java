@@ -14,9 +14,10 @@ public class ReminderContract {
             FeedEntry.COLUMN_DATE + " INTEGER, " +
             FeedEntry.COLUMN_LOCATION_ADDRESS + " TEXT, " +
             FeedEntry.COLUMN_LOCATION_LAT + " INTEGER, " +
-            FeedEntry.COLUMN_LOCATION_LON + " INTEGER)";
+            FeedEntry.COLUMN_LOCATION_LON + " INTEGER," +
+            FeedEntry.COLUMN_SMS_SENT + " INTEGER)";
 
-    public static final String SQL_DROP_TABLE = "DROP TABLE IF EXIST " + FeedEntry.TABLE_NAME;
+    public static final String SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + FeedEntry.TABLE_NAME;
 
     public class FeedEntry implements BaseColumns {
         public static final String TABLE_NAME = "REMINDER";
@@ -26,6 +27,7 @@ public class ReminderContract {
         public static final String COLUMN_LOCATION_ADDRESS = "address";
         public static final String COLUMN_LOCATION_LAT = "latitude";
         public static final String COLUMN_LOCATION_LON = "longitude";
+        public static final String COLUMN_SMS_SENT = "Sms";
     }
 
     public static final String[] PROJECTION = {
