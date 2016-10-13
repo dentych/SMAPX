@@ -14,6 +14,9 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import group.smapx.remindalot.database.DatabaseDAO;
+import group.smapx.remindalot.model.Reminder;
+
 public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
     MediaPlayer mp;
@@ -24,8 +27,14 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         Bundle reminderInfo = intent.getBundleExtra("reminderInfo");
-        String title = reminderInfo.getString("title");
-        String description = reminderInfo.getString("description");
+        Reminder reminder = (Reminder) reminderInfo.getSerializable("reminder");
+
+        if (reminder == null)
+            return;
+
+        DatabaseDAO db = new DatabaseDAO(context);
+        reminder.setNotified(true);
+        db.updateReminder(reminder);
 
         AlarmSounding = true;
         vib = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
@@ -56,8 +65,8 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
         }
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context)
-                .setTitle(title)
-                .setMessage(description)
+                .setTitle(reminder.getTitle())
+                .setMessage(reminder.getDescription())
                 .setNeutralButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -81,7 +90,6 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
         alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
         alertDialog.show();
-
     }
 }
 
