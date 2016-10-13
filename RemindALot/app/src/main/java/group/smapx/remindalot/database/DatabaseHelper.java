@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    private static final int version = 2;
+    private static final int version = 3;
     private static final String DB_NAME = "RemindALot.db";
     private static final String LOG_TAG = "DatabaseHelper";
     private static DatabaseHelper instance;
