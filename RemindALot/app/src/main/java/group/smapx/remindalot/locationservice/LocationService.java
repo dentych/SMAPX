@@ -1,33 +1,24 @@
 package group.smapx.remindalot.locationservice;
 
 import android.Manifest;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Debug;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
-import org.json.simple.parser.ParseException;
-
-import java.io.IOException;
 import java.util.Calendar;
-import java.util.Timer;
 
 import group.smapx.remindalot.Location.TravelManager;
 import group.smapx.remindalot.SMShelper.SMShelper;
@@ -37,18 +28,20 @@ import group.smapx.remindalot.model.Reminder;
 import group.smapx.remindalot.model.TravelInfo;
 
 public class LocationService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+    private static final String LOG_TAG = "LocationService";
     private TravelManager travelManager;
     private DatabaseDAO db;
     private GoogleApiClient googleApiClient;
-    SMShelper smShelper = new SMShelper(getBaseContext());
+    SMShelper smShelper;
     private boolean googleApiConnected = false;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d("Debug","Created");
+        Log.d(LOG_TAG,"Created");
         travelManager = new TravelManager();
         db = new DatabaseDAO(getBaseContext());
+        smShelper = new SMShelper(getBaseContext());
     }
 
     @Override
@@ -70,7 +63,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onDestroy() {
-        Log.d("Debug","Destroy");
+        Log.d(LOG_TAG,"Destroy");
         super.onDestroy();
         stopLocationUpdates();
         if (googleApiClient.isConnected()) {
@@ -113,7 +106,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Log.d("Debug","On connected, starting shit");
+        Log.d(LOG_TAG,"On connected, starting shit");
         googleApiConnected = true;
         startLocationUpdates();
     }
@@ -130,9 +123,12 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d("Debug","New location: " +location.getLatitude() + " / " + location.getLongitude() );
+        Log.d(LOG_TAG,"New location: " +location.getLatitude() + " / " + location.getLongitude() );
 
         Reminder reminder = db.getFirstReminder();
+        if (reminder == null) {
+            return;
+        }
         if(reminder.isSmsSent())
             return; // Kunne gøre fancy snask, but no.
 
@@ -162,6 +158,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
             String delay = Long.toString((((secondsOfTravel-timeLeft) / (1000*60)) % 60));
             smShelper.sendSMS(reminder.getContacts(),delay);
             reminder.setSmsSent(true);
+            db.updateReminder(reminder);
         }
     }
 }
