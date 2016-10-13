@@ -15,7 +15,8 @@ public class ReminderContract {
             FeedEntry.COLUMN_LOCATION_ADDRESS + " TEXT, " +
             FeedEntry.COLUMN_LOCATION_LAT + " INTEGER, " +
             FeedEntry.COLUMN_LOCATION_LON + " INTEGER," +
-            FeedEntry.COLUMN_SMS_SENT + " INTEGER)";
+            FeedEntry.COLUMN_SMS_SENT + " INTEGER," +
+            FeedEntry.COLUMN_TRANSPORTATION_TYPE + " TEXT)";
 
     public static final String SQL_DROP_TABLE = "DROP TABLE IF EXISTS " + FeedEntry.TABLE_NAME;
 
@@ -28,6 +29,7 @@ public class ReminderContract {
         public static final String COLUMN_LOCATION_LAT = "latitude";
         public static final String COLUMN_LOCATION_LON = "longitude";
         public static final String COLUMN_SMS_SENT = "Sms";
+        public static final String COLUMN_TRANSPORTATION_TYPE = "Transportation";
     }
 
     public static final String[] PROJECTION = {
@@ -38,6 +40,7 @@ public class ReminderContract {
             FeedEntry.COLUMN_LOCATION_ADDRESS,
             FeedEntry.COLUMN_LOCATION_LAT,
             FeedEntry.COLUMN_LOCATION_LON,
-            FeedEntry.COLUMN_SMS_SENT
+            FeedEntry.COLUMN_SMS_SENT,
+            FeedEntry.COLUMN_TRANSPORTATION_TYPE
     };
 }
