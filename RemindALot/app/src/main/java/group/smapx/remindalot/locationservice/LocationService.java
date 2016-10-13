@@ -167,7 +167,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         Log.d(LOG_TAG, "Delay: " + (millisecondsOfTravel - timeLeft));
         if (timeLeft < millisecondsOfTravel) {
             Log.d("Debug", "IN IF: " + (millisecondsOfTravel - timeLeft));
-            String delay = Long.toString((((millisecondsOfTravel - timeLeft) / (1000 * 60)) % 60));
+            String delay = Long.toString((TimeUnit.MILLISECONDS.toMinutes(millisecondsOfTravel - timeLeft)));
             smShelper.sendSMS(latestReminder.getContacts(), delay);
             latestReminder.setSmsSent(true);
             db.updateReminder(latestReminder);

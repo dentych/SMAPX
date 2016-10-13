@@ -16,7 +16,7 @@
     <string name="create_search">Search</string>
     <string name="create_driving">Driving</string>
     <string name="create_walking">Walking</string>
-    <string name="create_public_transportation">Public transportation</string>
+    <string name="create_public_transportation">Transit</string>
     <string name="create_add_description">Add description</string>
     <string name="create_add_participant">Add participant</string>
     <string name="main_number_of_reminders">Number of Reminders:</string>

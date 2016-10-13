@@ -2,10 +2,10 @@ package group.smapx.remindalot.model;
 
 public class TravelInfo {
     public static class TravelType{
-        public static String WALKING = "walking";
-        public static String DRIVING = "driving";
-        public static String PUBLIC_TRANSPORTATION = "transit";
-        public static String BIKING = "bicycling";
+        public static final String WALKING = "walking";
+        public static final String DRIVING = "driving";
+        public static final String PUBLIC_TRANSPORTATION = "transit";
+        public static final String BIKING = "bicycling";
     };
 
     private LocationData from;
