@@ -30,11 +30,12 @@ import group.smapx.remindalot.model.TravelInfo;
 
 public class LocationService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, TravelinfoReceier {
     private static final String LOG_TAG = "LocationService";
+    SMShelper smShelper;
     private TravelManager travelManager;
     private DatabaseDAO db;
     private GoogleApiClient googleApiClient;
-    SMShelper smShelper;
     Reminder latestReminder;
+
     private boolean googleApiConnected = false;
 
     @Override
@@ -157,9 +158,9 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         long timeLeft = latestReminder.getDate() - Calendar.getInstance().getTimeInMillis();
         long secondsOfTravel = travelInfo.getSecondsOfTravel();
 
-        Log.d("Debug", "Seconds of " + secondsOfTravel);
-        Log.d("Debug", "Timeleft to reminder : " + timeLeft);
-        Log.d("Debug", "Delay: " + (secondsOfTravel * 1000 - timeLeft));
+        Log.d(LOG_TAG, "Seconds of " + secondsOfTravel);
+        Log.d(LOG_TAG, "Timeleft to reminder : " + timeLeft);
+        Log.d(LOG_TAG, "Delay: " + (secondsOfTravel * 1000 - timeLeft));
         if (timeLeft < secondsOfTravel * 1000) {
             Log.d("Debug", "IN IF: " + (secondsOfTravel * 1000 - timeLeft));
             String delay = Long.toString((((secondsOfTravel * 1000 - timeLeft) / (1000 * 60)) % 60));

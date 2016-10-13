@@ -37,6 +37,7 @@ public class ReminderContract {
             FeedEntry.COLUMN_DATE,
             FeedEntry.COLUMN_LOCATION_ADDRESS,
             FeedEntry.COLUMN_LOCATION_LAT,
-            FeedEntry.COLUMN_LOCATION_LON
+            FeedEntry.COLUMN_LOCATION_LON,
+            FeedEntry.COLUMN_SMS_SENT
     };
 }
