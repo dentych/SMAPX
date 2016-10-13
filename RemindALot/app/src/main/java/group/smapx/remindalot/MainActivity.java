@@ -155,7 +155,6 @@ public class MainActivity extends AppCompatActivity {
             Log.d(LOG_TAG, "Adapter count: " + adapter.getCount());
             db.insertReminder(reminder);
 
-            basicReminder.setAlarm(reminder);
             reminderCount.setText(String.valueOf(adapter.getCount()));
 
         } else if (resultCode == ShowActivity.RESULT_DELETE) {
@@ -198,7 +197,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         db.updateReminder(reminder);
-        basicReminder.setAlarm(reminder);
         Log.d(LOG_TAG, "Done editing.");
     }
 

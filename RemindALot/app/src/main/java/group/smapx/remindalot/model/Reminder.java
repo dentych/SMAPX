@@ -21,6 +21,16 @@ public class Reminder implements Serializable {
     private ArrayList<Contact> contacts;
     private LocationData locationData;
 
+    public boolean isNotified() {
+        return notified;
+    }
+
+    public void setNotified(boolean notified) {
+        this.notified = notified;
+    }
+
+    private boolean notified;
+
     public String getMeansOfTransportation() {
         return meansOfTransportation;
     }

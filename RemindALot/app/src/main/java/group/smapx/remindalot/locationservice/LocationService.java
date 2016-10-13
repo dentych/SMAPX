@@ -22,6 +22,7 @@ import com.google.android.gms.location.LocationServices;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
+import group.smapx.remindalot.BasicReminder.BasicReminder;
 import group.smapx.remindalot.Location.TravelManager;
 import group.smapx.remindalot.Location.TravelinfoReceier;
 import group.smapx.remindalot.MainActivity;
@@ -41,12 +42,13 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     private Reminder latestReminder;
     private Location lastLocation;
     private long lastLocationTime;
-
+    private BasicReminder basicReminder;
     private boolean googleApiConnected = false;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        basicReminder = new BasicReminder(getBaseContext());
         Log.d(LOG_TAG, "Created");
         travelManager = new TravelManager();
         db = new DatabaseDAO(getBaseContext());
@@ -189,6 +191,11 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
         long timeLeft = latestReminder.getDate() - Calendar.getInstance().getTimeInMillis();
         long millisecondsOfTravel = travelInfo.getSecondsOfTravel() * 1000;
+        if(!latestReminder.isNotified()){
+            long basicReminderTime = latestReminder.getDate() - millisecondsOfTravel - TimeUnit.MINUTES.toMillis(15);
+            basicReminder.setAlarm(latestReminder,basicReminderTime);
+            Log.d(LOG_TAG, Long.toString(basicReminderTime));
+        }
 
         Log.d(LOG_TAG, "Milliseconds of travel: " + millisecondsOfTravel);
         Log.d(LOG_TAG, "Timeleft to reminder: " + timeLeft);
