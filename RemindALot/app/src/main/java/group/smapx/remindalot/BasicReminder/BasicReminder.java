@@ -20,7 +20,7 @@ public class BasicReminder {
         am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     }
 
-    public void setAlarm(Reminder reminder) {
+    public void setAlarm(Reminder reminder, long time) {
 
         Bundle reminderInfo = new Bundle();
         reminderInfo.putString("title", reminder.getTitle());
@@ -32,9 +32,9 @@ public class BasicReminder {
         PendingIntent pendingAlarm = PendingIntent.getBroadcast(context, (int) reminder.getId(), setAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
 
         if (Build.VERSION.SDK_INT >= 19) {
-            am.setExact(AlarmManager.RTC_WAKEUP, reminder.getDate(), pendingAlarm);
+            am.setExact(AlarmManager.RTC_WAKEUP, time, pendingAlarm);
         } else {
-            am.set(AlarmManager.RTC_WAKEUP, reminder.getDate(), pendingAlarm);
+            am.set(AlarmManager.RTC_WAKEUP, time, pendingAlarm);
         }
 
         Log.d("BasicReminder", "Setting Alarm");
