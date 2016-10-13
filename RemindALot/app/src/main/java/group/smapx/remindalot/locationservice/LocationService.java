@@ -163,8 +163,12 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
         long timeLeft = latestReminder.getDate() - Calendar.getInstance().getTimeInMillis();
         long millisecondsOfTravel = travelInfo.getSecondsOfTravel() * 1000;
-        long basicReminderTime = latestReminder.getDate() - millisecondsOfTravel - TimeUnit.MINUTES.toMillis(15);
-        basicReminder.setAlarm(latestReminder,basicReminderTime);
+        if(!latestReminder.isNotified()){
+            long basicReminderTime = latestReminder.getDate() - millisecondsOfTravel - TimeUnit.MINUTES.toMillis(15);
+            basicReminder.setAlarm(latestReminder,basicReminderTime);
+            Log.d(LOG_TAG, Long.toString(basicReminderTime));
+        }
+
         Log.d(LOG_TAG, "Milliseconds of travel: " + millisecondsOfTravel);
         Log.d(LOG_TAG, "Timeleft to reminder: " + timeLeft);
         Log.d(LOG_TAG, "Delay: " + (millisecondsOfTravel - timeLeft));
