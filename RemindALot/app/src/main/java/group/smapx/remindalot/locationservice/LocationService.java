@@ -133,6 +133,8 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         Log.d("Debug","New location: " +location.getLatitude() + " / " + location.getLongitude() );
 
         Reminder reminder = db.getFirstReminder();
+        if(reminder.isSmsSent())
+            return; // Kunne gøre fancy snask, but no.
 
         double lat = location.getLatitude();
         double lon = location.getLongitude();

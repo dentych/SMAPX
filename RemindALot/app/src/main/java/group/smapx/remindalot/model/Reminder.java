@@ -6,6 +6,16 @@ import java.util.ArrayList;
 public class Reminder implements Serializable {
     private long id;
     private String title;
+
+    public boolean isSmsSent() {
+        return smsSent;
+    }
+
+    public void setSmsSent(boolean smsSent) {
+        this.smsSent = smsSent;
+    }
+
+    private boolean smsSent;
     private String description;
     private long date;
     private ArrayList<Contact> contacts;
