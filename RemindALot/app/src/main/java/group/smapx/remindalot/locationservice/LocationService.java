@@ -10,6 +10,7 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -23,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 import group.smapx.remindalot.Location.TravelManager;
 import group.smapx.remindalot.Location.TravelinfoReceier;
+import group.smapx.remindalot.MainActivity;
 import group.smapx.remindalot.SMShelper.SMShelper;
 import group.smapx.remindalot.database.DatabaseDAO;
 import group.smapx.remindalot.model.LocationData;
@@ -133,6 +135,15 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         if (latestReminder == null) {
             return;
         }
+
+        if (Calendar.getInstance().getTimeInMillis() > latestReminder.getDate()) {
+            Intent intent = new Intent(MainActivity.ACTION_REMINDER_DELETED);
+            intent.putExtra("reminder", latestReminder);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+            onLocationChanged(location);
+            return;
+        }
+
         if (latestReminder.isSmsSent()) {
             return; // Kunne gøre fancy snask, but no.
         }
@@ -157,16 +168,14 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         }
 
         long timeLeft = latestReminder.getDate() - Calendar.getInstance().getTimeInMillis();
-        long secondsOfTravel = travelInfo.getSecondsOfTravel();
+        long millisecondsOfTravel = travelInfo.getSecondsOfTravel() * 1000;
 
-        Log.d(LOG_TAG, "Seconds of " + secondsOfTravel);
-        Log.d(LOG_TAG, "Timeleft to reminder : " + timeLeft);
-        Log.d(LOG_TAG, "Delay: " + (secondsOfTravel * 1000 - timeLeft));
-        if (timeLeft < secondsOfTravel * 1000) {
-            Log.d("Debug", "IN IF: " + (secondsOfTravel * 1000 - timeLeft));
-          //  String delay = Long.toString((((secondsOfTravel * 1000 - timeLeft) / (1000 * 60)) % 60));
-            String delay = Long.toString( TimeUnit.MILLISECONDS.toMinutes(secondsOfTravel * 1000 - timeLeft));
-
+        Log.d(LOG_TAG, "Milliseconds of travel: " + millisecondsOfTravel);
+        Log.d(LOG_TAG, "Timeleft to reminder: " + timeLeft);
+        Log.d(LOG_TAG, "Delay: " + (millisecondsOfTravel - timeLeft));
+        if (timeLeft < millisecondsOfTravel) {
+            Log.d("Debug", "IN IF: " + (millisecondsOfTravel - timeLeft));
+            String delay = Long.toString((((millisecondsOfTravel - timeLeft) / (1000 * 60)) % 60));
             smShelper.sendSMS(latestReminder.getContacts(), delay);
             latestReminder.setSmsSent(true);
             db.updateReminder(latestReminder);
