@@ -19,6 +19,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 import group.smapx.remindalot.Location.TravelManager;
 import group.smapx.remindalot.Location.TravelinfoReceier;
@@ -163,7 +164,9 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         Log.d(LOG_TAG, "Delay: " + (secondsOfTravel * 1000 - timeLeft));
         if (timeLeft < secondsOfTravel * 1000) {
             Log.d("Debug", "IN IF: " + (secondsOfTravel * 1000 - timeLeft));
-            String delay = Long.toString((((secondsOfTravel * 1000 - timeLeft) / (1000 * 60)) % 60));
+          //  String delay = Long.toString((((secondsOfTravel * 1000 - timeLeft) / (1000 * 60)) % 60));
+            String delay = Long.toString( TimeUnit.MILLISECONDS.toMinutes(secondsOfTravel * 1000 - timeLeft));
+
             smShelper.sendSMS(latestReminder.getContacts(), delay);
             latestReminder.setSmsSent(true);
             db.updateReminder(latestReminder);
