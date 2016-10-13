@@ -28,7 +28,8 @@
             android:id="@+id/count_label"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:textAppearance="?android:textAppearanceMedium"/>
 
         <TextView
             android:text="@string/main_start_number_of_reminders"
@@ -39,7 +40,8 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
-            android:layout_toEndOf="@+id/count_label" />
+            android:layout_toEndOf="@+id/count_label"
+            android:textAppearance="?android:textAppearanceMedium"/>
     </RelativeLayout>
 
     <View

@@ -110,9 +110,13 @@
         android:layout_width="match_parent"
         android:id="@+id/contactList"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/peopleBtn" />
+        android:layout_toEndOf="@+id/peopleBtn"
+        android:layout_toRightOf="@+id/peopleBtn"
+        android:layout_below="@+id/rgp"
+        android:layout_toLeftOf="@+id/cancelBtn"
+        android:layout_toStartOf="@+id/cancelBtn"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"/>
 
     <RadioGroup
         android:layout_width="wrap_content"
@@ -172,11 +176,8 @@
         android:drawableLeft="@drawable/contacts"
         android:drawablePadding="5dp"
         android:id="@+id/peopleBtn"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_alignBaseline="@+id/descButton"
-        android:layout_alignBottom="@+id/descButton"
-        android:layout_toRightOf="@+id/descButton"
-        android:layout_toEndOf="@+id/descButton" />
+        android:layout_below="@id/descButton"
+        style="@style/Widget.AppCompat.Button.Borderless" />
 
     <![CDATA[
 
