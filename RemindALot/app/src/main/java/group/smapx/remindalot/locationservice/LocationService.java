@@ -33,11 +33,14 @@ import group.smapx.remindalot.model.TravelInfo;
 
 public class LocationService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, TravelinfoReceier {
     private static final String LOG_TAG = "LocationService";
+    private static final long LAST_LOCATION_UPDATE_INTERVAL = 60000;
     SMShelper smShelper;
     private TravelManager travelManager;
     private DatabaseDAO db;
     private GoogleApiClient googleApiClient;
-    Reminder latestReminder;
+    private Reminder latestReminder;
+    private Location lastLocation;
+    private long lastLocationTime;
 
     private boolean googleApiConnected = false;
 
@@ -131,6 +134,8 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     public void onLocationChanged(Location location) {
         Log.d(LOG_TAG, "New location: " + location.getLatitude() + " / " + location.getLongitude());
 
+        updateLastLocation(location);
+
         latestReminder = getFirstReminder();
         if (latestReminder == null) {
             return;
@@ -150,6 +155,29 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         travelManager.getTravelInfo(latestReminder.getMeansOfTransportation(), from, latestReminder.getLocationData(), this);
 
 
+    }
+
+    private void updateLastLocation(Location location) {
+        long timeNow = Calendar.getInstance().getTimeInMillis();
+        if (lastLocation == null) {
+            lastLocation = location;
+            lastLocationTime = timeNow;
+        } else {
+            long timeSinceUpdated = timeNow - lastLocationTime;
+            if (timeSinceUpdated > LAST_LOCATION_UPDATE_INTERVAL) {
+                lastLocation = location;
+                lastLocationTime = timeNow;
+            }
+        }
+    }
+
+    private boolean isMoving(Location location) {
+        boolean result = false;
+        if (lastLocation != null && location.distanceTo(lastLocation) > 50) {
+            result = true;
+        }
+
+        return result;
     }
 
     @Override
