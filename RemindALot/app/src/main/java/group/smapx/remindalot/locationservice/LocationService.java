@@ -144,7 +144,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
                 ""
         );
 
-        travelManager.getTravelInfo(TravelInfo.TravelType.DRIVING, from, latestReminder.getLocationData(), this);
+        travelManager.getTravelInfo(latestReminder.getMeansOfTransportation(), from, latestReminder.getLocationData(), this);
 
 
     }
