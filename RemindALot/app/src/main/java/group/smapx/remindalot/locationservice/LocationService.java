@@ -30,6 +30,7 @@ import java.util.Calendar;
 import java.util.Timer;
 
 import group.smapx.remindalot.Location.TravelManager;
+import group.smapx.remindalot.SMShelper.SMShelper;
 import group.smapx.remindalot.database.DatabaseDAO;
 import group.smapx.remindalot.model.LocationData;
 import group.smapx.remindalot.model.Reminder;
@@ -39,6 +40,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     private TravelManager travelManager;
     private DatabaseDAO db;
     private GoogleApiClient googleApiClient;
+    SMShelper smShelper = new SMShelper(getBaseContext());
     private boolean googleApiConnected = false;
 
     @Override
@@ -155,7 +157,8 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         long secondsOfTravel = travelInfo.getSecondsOfTravel();
 
         if (timeLeft < secondsOfTravel) {
-            // TODO: Send en fucking SMS.
+            String delay = Long.toString((((secondsOfTravel-timeLeft) / (1000*60)) % 60));
+            smShelper.sendSMS(reminder.getContacts(),delay);
         }
     }
 }
