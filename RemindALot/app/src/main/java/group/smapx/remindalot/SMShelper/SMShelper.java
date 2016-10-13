@@ -9,6 +9,7 @@ import android.util.Log;
 
 import java.util.List;
 
+import group.smapx.remindalot.R;
 import group.smapx.remindalot.model.Contact;
 
 public class SMShelper {
@@ -43,7 +44,7 @@ public class SMShelper {
 
                 if (phoneNumber != null) {
 
-                    String message = "Im sorry to say that i will be " + delay + " minutes late, see you soon!";
+                    String message = R.string.sms_part1 + delay + R.string.sms_part2;
 
                     smsManager.sendTextMessage(phoneNumber, null, message, null, null);
                     Log.d(LOG_TAG, "Send SMS to: " + phoneNumber);

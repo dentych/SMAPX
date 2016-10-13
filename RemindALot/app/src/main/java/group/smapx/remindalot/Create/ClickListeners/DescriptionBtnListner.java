@@ -8,10 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import group.smapx.remindalot.Create.ReciverInterfaces.DescriptionReceiver;
-
-/**
- * Created by root on 10/9/16.
- */
+import group.smapx.remindalot.R;
 
 public class DescriptionBtnListner implements View.OnClickListener {
 
@@ -36,8 +33,8 @@ public class DescriptionBtnListner implements View.OnClickListener {
             this.textInput.setText(this.initalDescription);
 
         new AlertDialog.Builder(this.context)
-                .setTitle("Description")
-                .setMessage("Enter description")
+                .setTitle(R.string.description)
+                .setMessage(R.string.description_dialog_message)
                 .setView(this.textInput)
                 .setNeutralButton("OK", new DialogInterface.OnClickListener() {
                     @Override

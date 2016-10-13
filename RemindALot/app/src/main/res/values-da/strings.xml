@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Layout strings-->
+    <string name="action_settings">Indstillinger</string>
+    <string name="title">Titel</string>
+    <string name="place">Sted</string>
+    <string name="time">Tid</string>
+    <string name="description">Beskrivelse</string>
+    <string name="contacts">Kontakter</string>
+    <string name="date">Dato</string>
+    <string name="placeholderDate">01-01-2016</string>
+    <string name="location">Lokation</string>
+    <string name="placeholderLocation">Reminder lokation</string>
+    <string name="hintPhoneNumber">Intet telefonnummer</string>
+    <string name="create_ok">OK</string>
+    <string name="create_cancel">Annuller</string>
+    <string name="create_search">Søg</string>
+    <string name="create_driving">Kører</string>
+    <string name="create_walking">Går</string>
+    <string name="create_public_transportation">Bus/Tog</string>
+    <string name="create_add_description">Tilføj beskrivelse</string>
+    <string name="create_add_participant">Tilføj deltagere</string>
+    <string name="main_number_of_reminders">Antal Reminders:</string>
+    <string name="main_start_number_of_reminders">0</string>
+    <string name="create_biking">Cykler</string>
+    <string name="delete">Slet</string>
+    <string name="edit">Rediger</string>
+
+    <!--Dialog Messages-->
+    <string name="description_dialog_message">Indtast beskrivelse</string>
+    <string name="remove_contact_title">Fjern kontakt</string>
+    <string name="remove_contact_message">Er du sikker på at du vil fjerne denne kontakt?</string>
+    <string name="delete_reminder_title">Slet Reminder</string>
+    <string name="delete_reminder_message">Er du sikker på at du vil slette denne reminder?</string>
+
+    <!--Toast messages-->
+    <string name="address_network_validation_error">Fejl i adressen, verificer adressen og internet forbindelsen.</string>
+    <string name="validation_title_error">Titel feltet må ikke være tomt</string>
+    <string name="validation_location_error">Lokations feltet må ikke være tomt</string>
+    <string name="validation_adress_error">Der er et problem med denne adresse.</string>
+    <string name="validation_past_time_error">Kan ikke arrangere en reminder til fortiden, så gode er vi ikke ;)</string>
+    <string name="validation_date_time_error">Vær venlig at indsætte tid og dato</string>
+    <string name="permissions_needed_error">Både SMS og Lokation er nødvendig for at kunne fungere korrekt. Vær venlig at aktivere dette i telefon indstillinger.</string>
+
+    <!--SMS-->
+    <string name="sms_part1">Jeg bliver desværre </string>
+    <string name="sms_part2"> minutter forsinket, vi ses senere!</string>
+</resources>

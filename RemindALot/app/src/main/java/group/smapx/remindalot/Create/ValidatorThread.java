@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import group.smapx.remindalot.Create.ReciverInterfaces.LocationDataReceiver;
+import group.smapx.remindalot.R;
 import group.smapx.remindalot.model.LocationData;
 
 public class ValidatorThread extends AsyncTask<String, Integer, LocationData> {
@@ -38,7 +39,7 @@ public class ValidatorThread extends AsyncTask<String, Integer, LocationData> {
     @Override
     protected void onPostExecute(LocationData result) {
         if (this.err) {
-            Toast.makeText(this.context, "Error in address, verify the address and internet connection.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this.context, R.string.address_network_validation_error, Toast.LENGTH_LONG).show();
             this.locationData = null;
         } else {
             this.receiver.onLocationDataReady(result);

@@ -92,8 +92,8 @@ public class MainActivity extends AppCompatActivity {
                 final Reminder item = (Reminder) listReminder.getItemAtPosition(position);
 
                 new AlertDialog.Builder(MainActivity.this)
-                        .setTitle("Delete Reminder")
-                        .setMessage("Are you sure you want to delete the reminder?")
+                        .setTitle(R.string.delete_reminder_title)
+                        .setMessage(R.string.delete_reminder_message)
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -227,12 +227,8 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 1) {
             for (int grant : grantResults) {
                 if (grant != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(
-                            this,
-                            "Both SMS and Location needed to function " +
-                                    "properly. Please enable it in the phone settings.",
-                            Toast.LENGTH_LONG
-                    ).show();
+                    Toast.makeText(this, R.string.permissions_needed_error, Toast.LENGTH_LONG)
+                            .show();
                 }
             }
 

@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:src="@android:drawable/ic_menu_delete"
             app:fab_colorNormal="@color/colorAccent"
-            app:fab_label="Delete"
+            app:fab_label="@string/delete"
             app:fab_showShadow="false"
             app:fab_size="mini" />
 
@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:fab_colorNormal="@color/colorAccent"
-            app:fab_label="Edit"
+            app:fab_label="@string/edit"
             app:fab_size="mini" />
 
     </com.github.clans.fab.FloatingActionMenu>

@@ -236,22 +236,22 @@ public class CreateActivity extends AppCompatActivity implements ContactReceiver
     private boolean validateInput() {
         Log.d("HEJ!", "GetTSE: " + getTSE() + ". New date: " + new Date().getTime());
         if (isNullOrWhiteSpace(titleText.getText().toString())) {
-            Toast.makeText(this, "Title can not be empty", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.validation_title_error, Toast.LENGTH_LONG).show();
             Log.d("Debug", "Title");
             return false;
         } else if (isNullOrWhiteSpace(locationText.getText().toString())) {
-            Toast.makeText(this, "Location can not be empty", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.validation_location_error, Toast.LENGTH_LONG).show();
             Log.d("Debug", "Location");
             return false;
         } else if (reminder.getLocationData() == null) {
-            Toast.makeText(this, "There is a problem with the address.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.validation_adress_error, Toast.LENGTH_LONG).show();
             return false;
         } else if (getTSE() < new Date().getTime()) {
-            Toast.makeText(this, "Can not schedule a reminder in to the past. We're not that good.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.validation_past_time_error, Toast.LENGTH_LONG).show();
             Log.d("Debug", "Timeinmill");
             return false;
         } else if (getTSE() == 0) {
-            Toast.makeText(this, "Please select time and date", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.validation_date_time_error, Toast.LENGTH_LONG).show();
             Log.d("Debug", "Datetime");
             return false;
         }
@@ -298,11 +298,10 @@ public class CreateActivity extends AppCompatActivity implements ContactReceiver
         contactList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                Toast.makeText(CreateActivity.this, "Contact deleted", Toast.LENGTH_LONG);
 
                 new AlertDialog.Builder(CreateActivity.this)
-                        .setTitle("Remove contact")
-                        .setMessage("Are you sure you want to remove the contact?")
+                        .setTitle(R.string.remove_contact_title)
+                        .setMessage(R.string.remove_contact_message)
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

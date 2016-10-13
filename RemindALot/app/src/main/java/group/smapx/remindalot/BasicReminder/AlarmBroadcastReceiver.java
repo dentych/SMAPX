@@ -72,7 +72,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
         AlertDialog alertDialog = alertDialogBuilder.create();
 
         //Allows the alarm to be shown on locked screen
-        //***Heavily influenced by this: http://stackoverflow.com/questions/3629179/android-activity-over-default-lock-screen
+        //***This is not our code -> influenced by this: http://stackoverflow.com/questions/3629179/android-activity-over-default-lock-screen
         alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
                 WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
