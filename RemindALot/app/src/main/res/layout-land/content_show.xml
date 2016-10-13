@@ -53,8 +53,8 @@
         android:id="@+id/labelDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/txtDescription"
-        android:layout_marginTop="10dp"
+        android:layout_alignStart="@+id/txtDate"
+        android:layout_alignLeft="@+id/txtDate"
         android:text="@string/date"
         android:textAppearance="?android:textAppearanceMedium"/>
 
@@ -62,18 +62,16 @@
         android:id="@+id/txtDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_below="@id/labelDate"
-        android:layout_toLeftOf="@+id/map"
-        android:layout_toStartOf="@+id/map"
         android:hint="@string/placeholderDate"/>
 
     <TextView
         android:id="@+id/labelContacts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/txtDate"
+        android:layout_below="@id/txtDescription"
         android:layout_marginTop="10dp"
         android:text="@string/contacts"
         android:textAppearance="?android:textAppearanceMedium"/>
@@ -104,8 +102,10 @@
         android:id="@+id/labelLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/txtLocation"
-        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@+id/labelTitle"
+        android:layout_toRightOf="@+id/labelTitle"
         android:text="@string/location"
         android:textAppearance="?android:textAppearanceMedium"/>
 
@@ -113,11 +113,9 @@
         android:id="@+id/txtLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@+id/map"
-        android:layout_toStartOf="@+id/map"
+        android:layout_alignLeft="@+id/labelLocation"
+        android:layout_alignStart="@+id/labelLocation"
+        android:layout_below="@+id/labelLocation"
         android:hint="@string/placeholderLocation"/>
 
     <fragment
@@ -127,8 +125,10 @@
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
+        android:layout_below="@+id/txtLocation"
         android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
         android:layout_toEndOf="@+id/labelTitle"
         android:layout_toRightOf="@+id/labelTitle"/>
 
