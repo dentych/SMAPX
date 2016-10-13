@@ -109,6 +109,53 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true" />
 
+    <ListView
+        android:layout_width="match_parent"
+        android:id="@+id/contactList"
+        android:layout_height="120dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/peopleBtn" />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/rgp"
+        android:layout_below="@+id/searchBtn"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <RadioButton
+            android:text="Driving"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/drvingRG"
+            android:layout_weight="1"
+            android:checked="true" />
+
+        <RadioButton
+            android:text="Walking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/WalkingRB"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="Public transportation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/publicTransportRG"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="Biking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/BikingRB"
+            android:layout_weight="1" />
+    </RadioGroup>
+
     <Button
         android:text="Add description"
         android:layout_width="wrap_content"
@@ -117,7 +164,7 @@
         android:drawablePadding="5dp"
         android:id="@+id/descButton"
         style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_below="@+id/placement"
+        android:layout_below="@+id/rgp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -129,19 +176,10 @@
         android:drawablePadding="5dp"
         android:id="@+id/peopleBtn"
         style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_below="@+id/searchBtn"
+        android:layout_alignBaseline="@+id/descButton"
+        android:layout_alignBottom="@+id/descButton"
         android:layout_toRightOf="@+id/descButton"
         android:layout_toEndOf="@+id/descButton" />
-
-    <ListView
-        android:layout_width="match_parent"
-        android:id="@+id/contactList"
-        android:layout_height="120dp"
-        android:layout_below="@+id/descButton"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@+id/OKBtn"
-        android:layout_toStartOf="@+id/OKBtn" />
 
     <![CDATA[
 

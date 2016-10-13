@@ -20,6 +20,16 @@ public class Reminder implements Serializable {
     private long date;
     private ArrayList<Contact> contacts;
     private LocationData locationData;
+
+    public String getMeansOfTransportation() {
+        return meansOfTransportation;
+    }
+
+    public void setMeansOfTransportation(String meansOfTransportation) {
+        this.meansOfTransportation = meansOfTransportation;
+    }
+
+    private String meansOfTransportation;
     private int requestCode;
 
     public Reminder() {
