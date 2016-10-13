@@ -21,24 +21,26 @@ import com.google.android.gms.location.LocationServices;
 import java.util.Calendar;
 
 import group.smapx.remindalot.Location.TravelManager;
+import group.smapx.remindalot.Location.TravelinfoReceier;
 import group.smapx.remindalot.SMShelper.SMShelper;
 import group.smapx.remindalot.database.DatabaseDAO;
 import group.smapx.remindalot.model.LocationData;
 import group.smapx.remindalot.model.Reminder;
 import group.smapx.remindalot.model.TravelInfo;
 
-public class LocationService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class LocationService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, TravelinfoReceier {
     private static final String LOG_TAG = "LocationService";
     private TravelManager travelManager;
     private DatabaseDAO db;
     private GoogleApiClient googleApiClient;
     SMShelper smShelper;
+    Reminder latestReminder;
     private boolean googleApiConnected = false;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(LOG_TAG,"Created");
+        Log.d(LOG_TAG, "Created");
         travelManager = new TravelManager();
         db = new DatabaseDAO(getBaseContext());
         smShelper = new SMShelper(getBaseContext());
@@ -63,7 +65,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onDestroy() {
-        Log.d(LOG_TAG,"Destroy");
+        Log.d(LOG_TAG, "Destroy");
         super.onDestroy();
         stopLocationUpdates();
         if (googleApiClient.isConnected()) {
@@ -106,7 +108,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Log.d(LOG_TAG,"On connected, starting shit");
+        Log.d(LOG_TAG, "On connected, starting shit");
         googleApiConnected = true;
         startLocationUpdates();
     }
@@ -123,13 +125,13 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d(LOG_TAG,"New location: " +location.getLatitude() + " / " + location.getLongitude() );
+        Log.d(LOG_TAG, "New location: " + location.getLatitude() + " / " + location.getLongitude());
 
-        Reminder reminder = db.getFirstReminder();
-        if (reminder == null) {
+        latestReminder = db.getFirstReminder();
+        if (latestReminder == null) {
             return;
         }
-        if(reminder.isSmsSent())
+        if (latestReminder.isSmsSent())
             return; // Kunne gøre fancy snask, but no.
 
         double lat = location.getLatitude();
@@ -140,27 +142,35 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
                 ""
         );
 
-        TravelInfo travelInfo = null;
-        try {
-            travelInfo = travelManager.getTravelInfo(TravelInfo.TravelType.DRIVING, from, reminder.getLocationData());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        travelManager.getTravelInfo(TravelInfo.TravelType.DRIVING, from, latestReminder.getLocationData(), this);
+
+
+    }
+
+    @Override
+    public void onTravelInfoReady(TravelInfo travelInfo) {
 
         if (travelInfo == null) {
             return;
         }
 
-        long timeLeft = reminder.getDate() - Calendar.getInstance().getTimeInMillis();
+        long timeLeft = latestReminder.getDate() - Calendar.getInstance().getTimeInMillis();
         long secondsOfTravel = travelInfo.getSecondsOfTravel();
 
-        Log.d(LOG_TAG, "Seconds of travel: " + secondsOfTravel);
-
-        if (timeLeft < secondsOfTravel) {
-            String delay = Long.toString((((secondsOfTravel-timeLeft) / (1000*60)) % 60));
-            smShelper.sendSMS(reminder.getContacts(),delay);
-            reminder.setSmsSent(true);
-            db.updateReminder(reminder);
+        Log.d("Debug", "Seconds of " + secondsOfTravel);
+        Log.d("Debug", "Timeleft to reminder : " + timeLeft);
+        Log.d("Debug", "Delay: " + (secondsOfTravel * 1000 - timeLeft));
+        if (timeLeft < secondsOfTravel * 1000) {
+            Log.d("Debug", "IN IF: " + (secondsOfTravel * 1000 - timeLeft));
+            String delay = Long.toString((((secondsOfTravel * 1000 - timeLeft) / (1000 * 60)) % 60));
+            smShelper.sendSMS(latestReminder.getContacts(), delay);
+            latestReminder.setSmsSent(true);
+            db.updateReminder(latestReminder);
         }
+    }
+
+    @Override
+    public void onException(Exception e) {
+        Log.d("Error", "Exception caught: " + e.getMessage());
     }
 }
