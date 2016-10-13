@@ -1,14 +1,10 @@
 package group.smapx.remindalot.Location;
 
 
-import android.util.Log;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
-import java.io.IOException;
 
 import group.smapx.remindalot.Create.HTTPRequestExecutor;
 import group.smapx.remindalot.model.LocationData;
@@ -18,22 +14,34 @@ public class TravelManager {
 
     String BaseURL = "http://maps.googleapis.com/maps/api/directions/json?origin=";
     String DestionationURL = "&destination=";
-    String TransportationURL ="&sensor=false&mode=";
+    String TransportationURL = "&sensor=false&mode=";
 
 
-    public TravelInfo getTravelInfo(String type, LocationData from, LocationData to) throws IOException, ParseException {
-        String travelRequestURL = BaseURL + from.getLat() +"+" + from.getLon() +
-                DestionationURL + to.getLat() + "+" + to.getLon() +
-                TransportationURL + type;
+    public void getTravelInfo(final String type, final LocationData from, final LocationData to, final TravelinfoReceier receier) {
 
-        String response = new HTTPRequestExecutor().get(travelRequestURL);
+        new Thread() {
+            public void run() {
+                String travelRequestURL = BaseURL + from.getLat() + "+" + from.getLon() +
+                        DestionationURL + to.getLat() + "+" + to.getLon() +
+                        TransportationURL + type;
 
-        TravelInfo info = parseJSONData(response);
-        info.setFrom(from);
-        info.setTo(to);
-        info.setTravelType(type);
+                TravelInfo info = new TravelInfo();
+                String response = null;
+                try {
+                    response = new HTTPRequestExecutor().get(travelRequestURL);
+                    info = parseJSONData(response);
+                } catch (Exception e) {
+                    receier.onException(e);
+                    return;
+                }
 
-        return info;
+                info.setFrom(from);
+                info.setTo(to);
+                info.setTravelType(type);
+                receier.onTravelInfoReady(info);
+            }
+        }.start();
+
     }
 
     public TravelInfo parseJSONData(String responeData) throws ParseException {

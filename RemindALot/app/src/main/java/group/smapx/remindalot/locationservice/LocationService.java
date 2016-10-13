@@ -10,7 +10,8 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -18,30 +19,35 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
-import org.json.simple.parser.ParseException;
-
-import java.io.IOException;
 import java.util.Calendar;
-import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 
 import group.smapx.remindalot.Location.TravelManager;
+import group.smapx.remindalot.Location.TravelinfoReceier;
+import group.smapx.remindalot.MainActivity;
+import group.smapx.remindalot.SMShelper.SMShelper;
 import group.smapx.remindalot.database.DatabaseDAO;
 import group.smapx.remindalot.model.LocationData;
 import group.smapx.remindalot.model.Reminder;
 import group.smapx.remindalot.model.TravelInfo;
 
-public class LocationService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class LocationService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, TravelinfoReceier {
+    private static final String LOG_TAG = "LocationService";
+    SMShelper smShelper;
     private TravelManager travelManager;
     private DatabaseDAO db;
     private GoogleApiClient googleApiClient;
+    Reminder latestReminder;
+
     private boolean googleApiConnected = false;
 
     @Override
     public void onCreate() {
         super.onCreate();
-
+        Log.d(LOG_TAG, "Created");
         travelManager = new TravelManager();
         db = new DatabaseDAO(getBaseContext());
+        smShelper = new SMShelper(getBaseContext());
     }
 
     @Override
@@ -49,9 +55,13 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         long delay = 60000;
         if (!googleApiConnected) {
             googleApiClient = new GoogleApiClient.Builder(getBaseContext())
+                    .addApi(LocationServices.API)
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .build();
+        }
+        if (!googleApiClient.isConnected()) {
+            googleApiClient.connect();
         }
 
         return START_STICKY;
@@ -59,8 +69,12 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onDestroy() {
+        Log.d(LOG_TAG, "Destroy");
         super.onDestroy();
         stopLocationUpdates();
+        if (googleApiClient.isConnected()) {
+            googleApiClient.disconnect();
+        }
     }
 
     @Nullable
@@ -77,9 +91,12 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     }
 
     private void startLocationUpdates() {
+
         LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(600000);
-        locationRequest.setFastestInterval(300000);
+        locationRequest.setInterval(2500);
+        locationRequest.setFastestInterval(1000);
+        locationRequest.setMaxWaitTime(5000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED) {
@@ -95,6 +112,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        Log.d(LOG_TAG, "On connected, starting shit");
         googleApiConnected = true;
         startLocationUpdates();
     }
@@ -111,8 +129,16 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onLocationChanged(Location location) {
-        Reminder reminder = db.getFirstReminder();
+        Log.d(LOG_TAG, "New location: " + location.getLatitude() + " / " + location.getLongitude());
 
+        latestReminder = getFirstReminder();
+        if (latestReminder == null) {
+            return;
+        }
+
+        if (latestReminder.isSmsSent()) {
+            return; // Kunne gøre fancy snask, but no.
+        }
         double lat = location.getLatitude();
         double lon = location.getLongitude();
         LocationData from = new LocationData(
@@ -121,22 +147,49 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
                 ""
         );
 
-        TravelInfo travelInfo = null;
-        try {
-            travelInfo = travelManager.getTravelInfo(TravelInfo.TravelType.DRIVING, from, reminder.getLocationData());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        travelManager.getTravelInfo(TravelInfo.TravelType.DRIVING, from, latestReminder.getLocationData(), this);
+
+
+    }
+
+    @Override
+    public void onTravelInfoReady(TravelInfo travelInfo) {
 
         if (travelInfo == null) {
             return;
         }
 
-        long timeLeft = reminder.getDate() - Calendar.getInstance().getTimeInMillis();
-        long secondsOfTravel = travelInfo.getSecondsOfTravel();
+        long timeLeft = latestReminder.getDate() - Calendar.getInstance().getTimeInMillis();
+        long millisecondsOfTravel = travelInfo.getSecondsOfTravel() * 1000;
 
-        if (timeLeft < secondsOfTravel) {
-            // TODO: Send en fucking SMS.
+        Log.d(LOG_TAG, "Milliseconds of travel: " + millisecondsOfTravel);
+        Log.d(LOG_TAG, "Timeleft to reminder: " + timeLeft);
+        Log.d(LOG_TAG, "Delay: " + (millisecondsOfTravel - timeLeft));
+        if (timeLeft < millisecondsOfTravel) {
+            Log.d("Debug", "IN IF: " + (millisecondsOfTravel - timeLeft));
+            String delay = Long.toString((((millisecondsOfTravel - timeLeft) / (1000 * 60)) % 60));
+            smShelper.sendSMS(latestReminder.getContacts(), delay);
+            latestReminder.setSmsSent(true);
+            db.updateReminder(latestReminder);
         }
+    }
+
+    @Override
+    public void onException(Exception e) {
+        Log.d("Error", "Exception caught: " + e.getMessage());
+    }
+
+    public Reminder getFirstReminder() {
+        Reminder firstReminder = db.getFirstReminder();
+        if (firstReminder != null) {
+            if (Calendar.getInstance().getTimeInMillis() > firstReminder.getDate()) {
+                db.deleteReminder(firstReminder.getId());
+                Intent intent = new Intent(MainActivity.ACTION_REMINDER_DELETED);
+                intent.putExtra("reminder", firstReminder);
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                firstReminder = db.getFirstReminder();
+            }
+        }
+        return firstReminder;
     }
 }

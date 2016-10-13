@@ -78,6 +78,8 @@ public class DatabaseDAO {
             if (c != null) {
                 c.close();
             }
+            if (db != null)
+                db.close();
         }
 
         return reminder;
@@ -108,6 +110,9 @@ public class DatabaseDAO {
             if (c != null) {
                 c.close();
             }
+            if (db != null) {
+                db.close();
+            }
         }
 
         return reminders;
@@ -122,7 +127,7 @@ public class DatabaseDAO {
         ContentValues cv = getContentValuesForReminder(reminder);
 
         String where = ReminderContract.FeedEntry._ID + " = ?";
-        String[] whereArgs = { String.valueOf(reminder.getId()) };
+        String[] whereArgs = {String.valueOf(reminder.getId())};
 
         int rowsAffected = db.update(
                 ReminderContract.FeedEntry.TABLE_NAME,
@@ -154,6 +159,8 @@ public class DatabaseDAO {
         } finally {
             if (c != null)
                 c.close();
+            if (db != null)
+                db.close();
         }
 
         return firstReminder;
@@ -189,6 +196,8 @@ public class DatabaseDAO {
             if (c != null) {
                 c.close();
             }
+            if (db != null)
+                db.close();
         }
 
         return contacts;
@@ -214,7 +223,7 @@ public class DatabaseDAO {
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
         String selection = ContactContract.FeedEntry.COLUMN_REMINDER_FK + " = ?";
-        String[] selectionArgs = { String.valueOf(reminderId) };
+        String[] selectionArgs = {String.valueOf(reminderId)};
         int contactsDeleted = db.delete(ContactContract.FeedEntry.TABLE_NAME, selection, selectionArgs);
 
         return contactsDeleted > 0;
@@ -230,6 +239,7 @@ public class DatabaseDAO {
         cv.put(ReminderContract.FeedEntry.COLUMN_LOCATION_ADDRESS, l.getFormattedAddress());
         cv.put(ReminderContract.FeedEntry.COLUMN_LOCATION_LAT, l.getLat());
         cv.put(ReminderContract.FeedEntry.COLUMN_LOCATION_LON, l.getLon());
+        cv.put(ReminderContract.FeedEntry.COLUMN_SMS_SENT, reminder.isSmsSent());
         return cv;
     }
 
@@ -243,6 +253,12 @@ public class DatabaseDAO {
         reminder.setDate(c.getLong(3));
         LocationData l = new LocationData(c.getString(5), c.getString(6), c.getString(4));
         reminder.setLocationData(l);
+        int smsSent = c.getInt(7);
+        if (smsSent > 0) {
+            reminder.setSmsSent(true);
+        } else {
+            reminder.setSmsSent(false);
+        }
         ArrayList<Contact> contacts = getContactsForReminder(id);
         reminder.setContacts(contacts);
         return reminder;

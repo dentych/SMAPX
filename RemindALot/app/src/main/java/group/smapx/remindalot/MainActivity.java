@@ -27,14 +27,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import group.smapx.remindalot.BasicReminder.BasicReminder;
-import group.smapx.remindalot.SMShelper.SMShelper;
 import group.smapx.remindalot.adapter.ReminderAdapter;
 import group.smapx.remindalot.database.DatabaseDAO;
+import group.smapx.remindalot.locationservice.LocationService;
 import group.smapx.remindalot.model.Reminder;
 
 public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = "MainActivity";
     public static final String ACTION_REMINDER_EDITED = "group.smapx.remindalot.REMINDER_EDITED";
+    public static final String ACTION_REMINDER_DELETED = "group.smapx.remindalot.REMINDER_DELETED";
     private ReminderAdapter adapter;
     private BasicReminder basicReminder;
     private TextView reminderCount;
@@ -48,8 +49,10 @@ public class MainActivity extends AppCompatActivity {
         final ListView listReminder = (ListView) findViewById(R.id.listReminders);
         setSupportActionBar(toolbar);
 
+        startService();
+
         basicReminder = new BasicReminder(this);
-         reminderCount = (TextView)findViewById(R.id.reminder_count);
+        reminderCount = (TextView) findViewById(R.id.reminder_count);
 
 
         FloatingActionButton fab_create = (FloatingActionButton) findViewById(R.id.fab);
@@ -105,10 +108,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver,
-                new IntentFilter(ACTION_REMINDER_EDITED));
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ACTION_REMINDER_EDITED);
+        intentFilter.addAction(ACTION_REMINDER_DELETED);
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, intentFilter);
 
         checkPermissions();
+    }
+
+    private void startService() {
+        startService(new Intent(this, LocationService.class));
     }
 
     private void checkPermissions() {
@@ -138,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == CreateActivity.RESULT_CREATE) {
             Log.d(LOG_TAG, "Creating reminder in list and database...");
             Reminder reminder = (Reminder) data.getSerializableExtra("reminder");
+            deleteReminder(reminder);
             adapter.add(reminder);
 
             adapter.notifyDataSetChanged();
@@ -157,6 +167,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void deleteReminder(Reminder reminder) {
+        Log.d(LOG_TAG, "Deleting reminder with ID: " + reminder.getId());
+        Log.d(LOG_TAG, "Title: " + reminder.getTitle());
         long id = reminder.getId();
 
         for (int i = 0; i < adapter.getCount(); i++) {
@@ -171,30 +183,41 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void editReminder(Reminder reminder) {
+        long id = reminder.getId();
+
+        Log.d(LOG_TAG, "Trying to find the item to modify");
+        for (int i = 0; i < adapter.getCount(); i++) {
+            Reminder item = adapter.getItem(i);
+            if (item != null && item.getId() == id) {
+                adapter.remove(item);
+                adapter.insert(reminder, i);
+
+                break;
+            }
+        }
+
+        db.updateReminder(reminder);
+        basicReminder.setAlarm(reminder);
+        Log.d(LOG_TAG, "Done editing.");
+    }
+
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d(LOG_TAG, "Received broadcast");
-            if (intent != null && intent.hasExtra("reminder")) {
-                Log.d(LOG_TAG, "Intent has reminder in it.");
-                Reminder reminder = (Reminder) intent.getSerializableExtra("reminder");
+            if (!intent.hasExtra("reminder") || intent == null) {
+                return;
+            }
 
-                long id = reminder.getId();
-
-                Log.d(LOG_TAG, "Trying to find the item to modify");
-                for (int i = 0; i < adapter.getCount(); i++) {
-                    Reminder item = adapter.getItem(i);
-                    if (item != null && item.getId() == id) {
-                        adapter.remove(item);
-                        adapter.insert(reminder, i);
-
-                        break;
-                    }
-                }
-
-                db.updateReminder(reminder);
-                basicReminder.setAlarm(reminder);
-                Log.d(LOG_TAG, "Done editing.");
+            Reminder reminder = (Reminder) intent.getSerializableExtra("reminder");
+            switch (intent.getAction()) {
+                case ACTION_REMINDER_DELETED:
+                    deleteReminder(reminder);
+                    break;
+                case ACTION_REMINDER_EDITED:
+                    editReminder(reminder);
+                    break;
             }
         }
     };
@@ -214,6 +237,8 @@ public class MainActivity extends AppCompatActivity {
                     ).show();
                 }
             }
+
+            startService();
         }
     }
 }
