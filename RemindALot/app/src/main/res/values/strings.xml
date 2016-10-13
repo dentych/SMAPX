@@ -38,7 +38,7 @@
     <string name="validation_title_error">Title can not be empty</string>
     <string name="validation_location_error">Location can not be empty</string>
     <string name="validation_adress_error">There is a problem with the address.</string>
-    <string name="validation_past_time_error">Can not schedule a reminder in to the past. We're not that good.</string>
+    <string name="validation_past_time_error">Can not schedule a reminder in to the past. We are not that good.</string>
     <string name="validation_date_time_error">Please select time and date</string>
     <string name="permissions_needed_error">Both SMS and Location needed to function properly. Please enable it in the phone settings.</string>
 
