@@ -131,9 +131,9 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         if (latestReminder == null) {
             return;
         }
-        if (latestReminder.isSmsSent())
+        if (latestReminder.isSmsSent()) {
             return; // Kunne gøre fancy snask, but no.
-
+        }
         double lat = location.getLatitude();
         double lon = location.getLongitude();
         LocationData from = new LocationData(
