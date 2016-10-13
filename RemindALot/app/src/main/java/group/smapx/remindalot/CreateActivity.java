@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioButton;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
@@ -39,6 +40,11 @@ import group.smapx.remindalot.model.Contact;
 import group.smapx.remindalot.model.LocationData;
 import group.smapx.remindalot.model.Reminder;
 import group.smapx.remindalot.model.TravelInfo;
+
+import static group.smapx.remindalot.model.TravelInfo.TravelType.BIKING;
+import static group.smapx.remindalot.model.TravelInfo.TravelType.DRIVING;
+import static group.smapx.remindalot.model.TravelInfo.TravelType.PUBLIC_TRANSPORTATION;
+import static group.smapx.remindalot.model.TravelInfo.TravelType.WALKING;
 
 public class CreateActivity extends AppCompatActivity implements ContactReceiver, DescriptionReceiver, DateTimeReceiver, LocationDataReceiver {
     public static final int RESULT_CREATE = 100;
@@ -98,6 +104,25 @@ public class CreateActivity extends AppCompatActivity implements ContactReceiver
         if (reminder.getTitle() != null) {
             titleText.setText(reminder.getTitle());
         }
+
+        if(reminder.getMeansOfTransportation() != null){
+            Log.d("Shis", "MOT: " + reminder.getMeansOfTransportation());
+            switch (reminder.getMeansOfTransportation()){
+                case DRIVING:
+                    this.Drving.setChecked(true);
+                    break;
+                case BIKING:
+                    this.Biking.setChecked(true);
+                    break;
+                case WALKING:
+                    this.Walking.setChecked(true);
+                    break;
+                case PUBLIC_TRANSPORTATION:
+                    this.PublicTrans.setChecked(true);
+                    break;
+
+            }
+        }
         if (reminder.getDate() > 0) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(reminder.getDate());
@@ -152,7 +177,7 @@ public class CreateActivity extends AppCompatActivity implements ContactReceiver
     private String getMeansOfTransportation(){
         String MOT = "";
         if(Drving.isChecked())
-            MOT = TravelInfo.TravelType.DRIVING;
+            MOT = DRIVING;
         else if(Walking.isChecked())
             MOT = TravelInfo.TravelType.WALKING;
         else if(PublicTrans.isChecked())
