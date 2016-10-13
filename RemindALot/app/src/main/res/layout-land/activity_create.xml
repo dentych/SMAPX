@@ -147,20 +147,14 @@
             android:layout_height="wrap_content"
             android:id="@+id/publicTransportRG"
             android:layout_weight="1" />
-    </RadioGroup>
 
-    <Button
-        android:text="Add participant"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/contacts"
-        android:drawablePadding="5dp"
-        android:id="@+id/peopleBtn"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_below="@+id/rgp"
-        android:layout_toRightOf="@+id/descButton"
-        android:layout_toEndOf="@+id/descButton"
-        android:layout_marginTop="8dp" />
+        <RadioButton
+            android:text="Biking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/BikingRB"
+            android:layout_weight="1" />
+    </RadioGroup>
 
     <Button
         android:text="Add description"
@@ -170,10 +164,22 @@
         android:drawablePadding="5dp"
         android:id="@+id/descButton"
         style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_alignBaseline="@+id/peopleBtn"
-        android:layout_alignBottom="@+id/peopleBtn"
+        android:layout_below="@+id/rgp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <Button
+        android:text="Add participant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/contacts"
+        android:drawablePadding="5dp"
+        android:id="@+id/peopleBtn"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_alignBaseline="@+id/descButton"
+        android:layout_alignBottom="@+id/descButton"
+        android:layout_toRightOf="@+id/descButton"
+        android:layout_toEndOf="@+id/descButton" />
 
     <![CDATA[
 

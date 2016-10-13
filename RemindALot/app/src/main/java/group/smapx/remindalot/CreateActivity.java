@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
@@ -37,6 +38,7 @@ import group.smapx.remindalot.adapter.ContactsAdapter;
 import group.smapx.remindalot.model.Contact;
 import group.smapx.remindalot.model.LocationData;
 import group.smapx.remindalot.model.Reminder;
+import group.smapx.remindalot.model.TravelInfo;
 
 public class CreateActivity extends AppCompatActivity implements ContactReceiver, DescriptionReceiver, DateTimeReceiver, LocationDataReceiver {
     public static final int RESULT_CREATE = 100;
@@ -49,6 +51,7 @@ public class CreateActivity extends AppCompatActivity implements ContactReceiver
     Button okBtn, cancelBtn, descrButton, contactButton;
     Reminder reminder;
     boolean isPermissionReadContacts = false;
+    RadioButton Drving, Walking, PublicTrans, Biking;
     ListView contactList;
     PeopleButtonListener peoplebuttonListener;
     private int hour, minute, day, month, year = 0;
@@ -71,6 +74,12 @@ public class CreateActivity extends AppCompatActivity implements ContactReceiver
         thread.execute(locationText.getText().toString());
     }
 
+    private void initRadioBtns(){
+        this.Drving = (RadioButton)findViewById(R.id.drvingRG);
+        this.Walking = (RadioButton)findViewById(R.id.WalkingRB);
+        this.PublicTrans = (RadioButton)findViewById(R.id.publicTransportRG);
+        this.Biking = (RadioButton)findViewById(R.id.BikingRB);
+    }
     private void initDateTimeListeners() {
         dateText = (EditText) findViewById(R.id.datepicker);
         timeText = (EditText) findViewById(R.id.timepicker);
@@ -140,6 +149,20 @@ public class CreateActivity extends AppCompatActivity implements ContactReceiver
         this.contactButton.setOnClickListener(peoplebuttonListener);
     }
 
+    private String getMeansOfTransportation(){
+        String MOT = "";
+        if(Drving.isChecked())
+            MOT = TravelInfo.TravelType.DRIVING;
+        else if(Walking.isChecked())
+            MOT = TravelInfo.TravelType.WALKING;
+        else if(PublicTrans.isChecked())
+            MOT = TravelInfo.TravelType.PUBLIC_TRANSPORTATION;
+        else if(Biking.isChecked())
+            MOT = TravelInfo.TravelType.BIKING;
+
+        return MOT;
+
+    }
     private void initButtons() {
         this.okBtn = (Button) findViewById(R.id.OKBtn);
         this.cancelBtn = (Button) findViewById(R.id.cancelBtn);
@@ -159,6 +182,7 @@ public class CreateActivity extends AppCompatActivity implements ContactReceiver
                     reminder.setTitle(titleText.getText().toString());
                     reminder.setDate(getTSE());
                     reminder.setContacts(contacts);
+                    reminder.setMeansOfTransportation(getMeansOfTransportation());
 
                     Intent returnIntent = new Intent();
                     returnIntent.putExtra("reminder", reminder);
@@ -237,6 +261,7 @@ public class CreateActivity extends AppCompatActivity implements ContactReceiver
         this.peoplebuttonListener = new PeopleButtonListener(this, this);
         this.titleText = (EditText) findViewById(R.id.titleText);
         initDateTimeListeners();
+        initRadioBtns();
         initLocationListener();
         initContactList();
         initPeopleBtn();
