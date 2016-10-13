@@ -78,6 +78,8 @@ public class DatabaseDAO {
             if (c != null) {
                 c.close();
             }
+            if (db != null)
+                db.close();
         }
 
         return reminder;
@@ -107,6 +109,9 @@ public class DatabaseDAO {
         } finally {
             if (c != null) {
                 c.close();
+            }
+            if (db != null) {
+                db.close();
             }
         }
 
@@ -154,6 +159,8 @@ public class DatabaseDAO {
         } finally {
             if (c != null)
                 c.close();
+            if (db != null)
+                db.close();
         }
 
         return firstReminder;
@@ -189,6 +196,8 @@ public class DatabaseDAO {
             if (c != null) {
                 c.close();
             }
+            if (db != null)
+                db.close();
         }
 
         return contacts;

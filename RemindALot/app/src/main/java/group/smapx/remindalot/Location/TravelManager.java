@@ -6,8 +6,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.IOException;
-
 import group.smapx.remindalot.Create.HTTPRequestExecutor;
 import group.smapx.remindalot.model.LocationData;
 import group.smapx.remindalot.model.TravelInfo;
@@ -16,7 +14,7 @@ public class TravelManager {
 
     String BaseURL = "http://maps.googleapis.com/maps/api/directions/json?origin=";
     String DestionationURL = "&destination=";
-    String TransportationURL ="&sensor=false&mode=";
+    String TransportationURL = "&sensor=false&mode=";
 
 
     public void getTravelInfo(final String type, final LocationData from, final LocationData to, final TravelinfoReceier receier) {

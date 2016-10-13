@@ -96,7 +96,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         locationRequest.setInterval(2500);
         locationRequest.setFastestInterval(1000);
         locationRequest.setMaxWaitTime(5000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED) {
@@ -131,16 +131,8 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     public void onLocationChanged(Location location) {
         Log.d(LOG_TAG, "New location: " + location.getLatitude() + " / " + location.getLongitude());
 
-        latestReminder = db.getFirstReminder();
+        latestReminder = getFirstReminder();
         if (latestReminder == null) {
-            return;
-        }
-
-        if (Calendar.getInstance().getTimeInMillis() > latestReminder.getDate()) {
-            Intent intent = new Intent(MainActivity.ACTION_REMINDER_DELETED);
-            intent.putExtra("reminder", latestReminder);
-            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-            onLocationChanged(location);
             return;
         }
 
@@ -185,5 +177,19 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     @Override
     public void onException(Exception e) {
         Log.d("Error", "Exception caught: " + e.getMessage());
+    }
+
+    public Reminder getFirstReminder() {
+        Reminder firstReminder = db.getFirstReminder();
+        if (firstReminder != null) {
+            if (Calendar.getInstance().getTimeInMillis() > firstReminder.getDate()) {
+                db.deleteReminder(firstReminder.getId());
+                Intent intent = new Intent(MainActivity.ACTION_REMINDER_DELETED);
+                intent.putExtra("reminder", firstReminder);
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                firstReminder = db.getFirstReminder();
+            }
+        }
+        return firstReminder;
     }
 }
