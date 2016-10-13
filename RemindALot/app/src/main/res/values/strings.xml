@@ -23,6 +23,8 @@
     <string name="main_number_of_reminders">Number of Reminders:</string>
     <string name="main_start_number_of_reminders">0</string>
     <string name="create_biking">Biking</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
 
     <!--Dialog Messages-->
     <string name="description_dialog_message">Enter description</string>
@@ -43,6 +45,7 @@
     <!--SMS-->
     <string name="sms_part1">Im sorry to say that i will be </string>
     <string name="sms_part2"> minutes late, see you soon!</string>
+
 
 
 </resources>
