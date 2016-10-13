@@ -17,10 +17,9 @@
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
-        android:hint="Time"
+        android:hint="@string/time"
         android:singleLine="true"
         android:focusable="false"
-        android:contentDescription="The time"
         android:layout_width="150dp"
         android:id="@+id/timepicker"
         android:layout_alignBaseline="@+id/datepicker"
@@ -38,9 +37,8 @@
         android:id="@+id/titleText"
         android:drawableLeft="@drawable/moon"
         android:drawablePadding="5dp"
-        android:hint="Title"
+        android:hint="@string/title"
         android:singleLine="true"
-        android:contentDescription="TItle of the reminder"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -54,7 +52,7 @@
         android:ems="10"
         android:drawableLeft="@drawable/geofence"
         android:drawablePadding="5dp"
-        android:hint="Location"
+        android:hint="@string/location"
         android:id="@+id/placement"
         android:layout_below="@+id/datepicker"
         android:layout_alignParentLeft="true"
@@ -63,7 +61,7 @@
         android:layout_toStartOf="@+id/cancelBtn" />
 
     <Button
-        android:text="Search"
+        android:text="@string/create_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/searchBtn"
@@ -75,12 +73,11 @@
     <EditText
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Date"
+        android:hint="@string/date"
         android:singleLine="true"
         android:drawableLeft="@drawable/calender"
         android:drawablePadding="5dp"
         android:focusable="false"
-        android:contentDescription="The date"
         android:id="@+id/datepicker"
         android:layout_width="150dp"
         android:layout_below="@+id/titleText"
@@ -88,7 +85,7 @@
         android:layout_alignParentStart="true" />
 
     <Button
-        android:text="Cancel"
+        android:text="@string/create_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/cancelBtn"
@@ -98,7 +95,7 @@
         android:layout_alignParentEnd="true"/>
 
     <Button
-        android:text="OK"
+        android:text="@string/create_ok"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/OKBtn"
@@ -157,7 +154,7 @@
     </RadioGroup>
 
     <Button
-        android:text="Add description"
+        android:text="@string/create_add_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/newdesc"
@@ -169,7 +166,7 @@
         android:layout_alignParentStart="true" />
 
     <Button
-        android:text="Add participant"
+        android:text="@string/create_add_participant"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/contacts"
