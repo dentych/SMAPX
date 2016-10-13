@@ -139,7 +139,7 @@
             android:layout_weight="1" />
 
         <RadioButton
-            android:text="Biking"
+            android:text="@string/create_biking"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/BikingRB"

@@ -82,14 +82,6 @@ public class Reminder implements Serializable {
         this.contacts = contacts;
     }
 
-    public void setRequestCode(int requestCode) {
-        this.requestCode = requestCode;
-    }
-
-    public int getRequestCode() {
-        return requestCode;
-    }
-
     public LocationData getLocationData() {
         return locationData;
     }

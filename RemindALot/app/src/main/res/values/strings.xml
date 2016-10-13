@@ -1,4 +1,5 @@
 <resources>
+    <!--Layout strings-->
     <string name="app_name">RemindALot</string>
     <string name="action_settings">Settings</string>
     <string name="title">Title</string>
@@ -21,4 +22,27 @@
     <string name="create_add_participant">Add participant</string>
     <string name="main_number_of_reminders">Number of Reminders:</string>
     <string name="main_start_number_of_reminders">0</string>
+    <string name="create_biking">Biking</string>
+
+    <!--Dialog Messages-->
+    <string name="description_dialog_message">Enter description</string>
+    <string name="remove_contact_title">Remove contact</string>
+    <string name="remove_contact_message">Are you sure you want to remove the contact?</string>
+    <string name="delete_reminder_title">Delete Reminder</string>
+    <string name="delete_reminder_message">Are you sure you want to delete the reminder?</string>
+
+    <!--Toast messages-->
+    <string name="address_network_validation_error">Error in address, verify the address and internet connection.</string>
+    <string name="validation_title_error">Title can not be empty</string>
+    <string name="validation_location_error">Location can not be empty</string>
+    <string name="validation_adress_error">There is a problem with the address.</string>
+    <string name="validation_past_time_error">Can not schedule a reminder in to the past. We're not that good.</string>
+    <string name="validation_date_time_error">Please select time and date</string>
+    <string name="permissions_needed_error">Both SMS and Location needed to function properly. Please enable it in the phone settings.</string>
+
+    <!--SMS-->
+    <string name="sms_part1">Im sorry to say that i will be </string>
+    <string name="sms_part2"> minutes late, see you soon!</string>
+
+
 </resources>

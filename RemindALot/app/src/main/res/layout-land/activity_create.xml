@@ -124,7 +124,7 @@
         android:layout_alignParentStart="true">
 
         <RadioButton
-            android:text="Driving"
+            android:text="@string/create_driving"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/drvingRG"
@@ -132,21 +132,21 @@
             android:checked="true" />
 
         <RadioButton
-            android:text="Walking"
+            android:text="@string/create_walking"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/WalkingRB"
             android:layout_weight="1" />
 
         <RadioButton
-            android:text="Public transportation"
+            android:text="@string/create_public_transportation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/publicTransportRG"
             android:layout_weight="1" />
 
         <RadioButton
-            android:text="Biking"
+            android:text="@string/create_biking"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/BikingRB"
