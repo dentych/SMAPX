@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingBottom="@dimen/activity_vertical_margin"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin"
-                tools:context="group.smapx.remindalot.ShowActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="group.smapx.remindalot.ShowActivity">
 
     <TextView
         android:id="@+id/labelTitle"
@@ -16,7 +16,7 @@
         android:width="180dp"
         android:text="@string/title"
 
-        android:textAppearance="?android:textAppearanceMedium"/>
+        android:textAppearance="?android:textAppearanceMedium" />
 
     <TextView
         android:id="@+id/txtTitle"
@@ -27,7 +27,7 @@
         android:layout_below="@id/labelTitle"
         android:layout_toLeftOf="@+id/map"
         android:layout_toStartOf="@+id/map"
-        android:hint="@string/title"/>
+        android:hint="@string/title" />
 
     <TextView
         android:id="@+id/labelDescription"
@@ -36,7 +36,7 @@
         android:layout_below="@+id/txtTitle"
         android:layout_marginTop="10dp"
         android:text="@string/description"
-        android:textAppearance="?android:textAppearanceMedium"/>
+        android:textAppearance="?android:textAppearanceMedium" />
 
     <TextView
         android:id="@+id/txtDescription"
@@ -47,16 +47,16 @@
         android:layout_below="@id/labelDescription"
         android:layout_toLeftOf="@+id/map"
         android:layout_toStartOf="@+id/map"
-        android:hint="@string/description"/>
+        android:hint="@string/description" />
 
     <TextView
         android:id="@+id/labelDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/txtDate"
         android:layout_alignLeft="@+id/txtDate"
+        android:layout_alignStart="@+id/txtDate"
         android:text="@string/date"
-        android:textAppearance="?android:textAppearanceMedium"/>
+        android:textAppearance="?android:textAppearanceMedium" />
 
     <TextView
         android:id="@+id/txtDate"
@@ -65,7 +65,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_below="@id/labelDate"
-        android:hint="@string/placeholderDate"/>
+        android:hint="@string/placeholderDate" />
 
     <TextView
         android:id="@+id/labelContacts"
@@ -74,7 +74,7 @@
         android:layout_below="@id/txtDescription"
         android:layout_marginTop="10dp"
         android:text="@string/contacts"
-        android:textAppearance="?android:textAppearanceMedium"/>
+        android:textAppearance="?android:textAppearanceMedium" />
 
     <ScrollView
         android:id="@+id/activity_show"
@@ -95,7 +95,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/contacts"
             android:orientation="vertical"
-            android:scrollbars="none"/>
+            android:scrollbars="none" />
     </ScrollView>
 
     <TextView
@@ -107,7 +107,7 @@
         android:layout_toEndOf="@+id/labelTitle"
         android:layout_toRightOf="@+id/labelTitle"
         android:text="@string/location"
-        android:textAppearance="?android:textAppearanceMedium"/>
+        android:textAppearance="?android:textAppearanceMedium" />
 
     <TextView
         android:id="@+id/txtLocation"
@@ -116,7 +116,9 @@
         android:layout_alignLeft="@+id/labelLocation"
         android:layout_alignStart="@+id/labelLocation"
         android:layout_below="@+id/labelLocation"
-        android:hint="@string/placeholderLocation"/>
+        android:layout_toLeftOf="@+id/txtDate"
+        android:layout_toStartOf="@+id/txtDate"
+        android:hint="@string/placeholderLocation" />
 
     <fragment
         android:id="@+id/map"
@@ -130,7 +132,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:layout_toEndOf="@+id/labelTitle"
-        android:layout_toRightOf="@+id/labelTitle"/>
+        android:layout_toRightOf="@+id/labelTitle" />
 
     <View
         android:id="@+id/imageView"
@@ -142,6 +144,6 @@
         android:layout_marginStart="10dp"
         android:layout_toEndOf="@+id/labelTitle"
         android:layout_toRightOf="@+id/labelTitle"
-        android:src="@android:color/transparent"/>
+        android:src="@android:color/transparent" />
 
 </RelativeLayout>
