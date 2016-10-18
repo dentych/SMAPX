@@ -43,6 +43,6 @@
     <string name="permissions_needed_error">Both SMS and Location needed to function properly. Please enable it in the phone settings.</string>
 
     <!--SMS-->
-    <string name="sms_part1">Im sorry to say that i will be</string>
+    <string name="sms_part1">I\'m sorry to say that I will be</string>
     <string name="sms_part2">minutes late, see you soon!</string>
 </resources>
